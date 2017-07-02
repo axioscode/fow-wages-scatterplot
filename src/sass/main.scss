@@ -1,0 +1,183 @@
+@import 'feta';
+@import 'reset';
+@import '_slider';
+@import '_arrowNav';
+@import '_tooltip';
+
+// div {
+// 	outline: 1px solid tomato;
+// }
+
+
+.container {
+	margin: 0 auto;
+	max-width: 700px;
+}
+
+
+
+.chart-hed {
+    position: relative;
+    font-family: $sans;
+    font-size: 18px;
+    font-weight: 500;
+    display: block;
+    width: 100%;
+    margin: 4px 0 14px 0;
+    text-align: center;
+    color: #4a4a4a;
+}
+
+h2 {
+	font-family: $mono;
+	margin: 4px 0;
+}
+
+.chart-div {
+	width: 50%;
+	float: left;
+	padding: 15px 0;
+}
+
+.chart {
+	width: 100%;
+	position: relative;
+
+	.tt {
+		position: absolute;
+		padding: 4px;
+		font-size: 12px;
+		font-family: $mono;
+		color: $color-purple-600 !important;
+		background-color: #fff;
+		display: none;
+
+		&.active {
+			display: block;
+		}
+	}
+
+	.dot {
+		stroke: #666;
+		stroke-width: 1;
+		fill-opacity: .7;
+		transition: opacity .1s ease-in-out;
+	   -moz-transition: opacity .1s ease-in-out;
+	   -webkit-transition: opacity .1s ease-in-out;
+	}
+
+	.line {
+		transition: opacity .1s ease-in-out;
+	   -moz-transition: opacity .1s ease-in-out;
+	   -webkit-transition: opacity .1s ease-in-out;
+	   stroke-opacity:0.5;
+	}
+
+	&.all {
+		.dot, .line {
+			opacity: 1;
+		}
+	}
+
+	&.high {
+
+		.dot, .line {
+			opacity: .1;
+		}
+
+		.dot.high, .line.high {
+			opacity: 1;
+		}
+	}
+
+	&.middle {
+
+		.dot, .line {
+			opacity: .1;
+		}
+
+		.dot.middle, .line.middle {
+			opacity: 1;
+		}
+	}
+
+	&.low {
+
+		.dot, .line {
+			opacity: .1;
+		}
+
+		.dot.low, .line.low {
+			opacity: 1;
+		}
+	}
+
+
+
+	.axis {
+
+		text {
+			font-family: $mono;
+			fill: $color-gray-700 !important;
+		}
+
+		.tick text {
+    		font-size: 12px;
+		}
+
+		line, path {
+			stroke: #c2c2c2 !important;
+			stroke-width: .5;
+		}
+
+		.domain {
+			display: none;
+		}
+
+		.label {
+			font-family: $mono;
+			font-size: 13px;
+			fill: #4a4a4a;
+		}
+
+		.axis-label {
+			font-size: 12px;
+			letter-spacing: .5px;
+		}
+		            
+	}
+
+	.zero-line {
+		stroke: $color-gray-700 !important;
+		stroke-width: 2;
+	}
+
+	.recession {
+		fill: $color-gray-200 !important;
+		opacity: .5;
+	}
+	
+
+}
+
+
+.category-nav {
+
+	font-family: $mono;
+	font-size: 14px;
+	color: $color-gray-900;
+
+	input {
+		-webkit-appearance: checkbox;
+	    border-radius: 0;
+	}
+
+}
+
+
+
+
+
+
+
+

@@ -1,0 +1,56 @@
+.navigation {
+  cursor: pointer;
+  margin: 10px 0px 0px 0px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  vertical-align: middle;
+  text-align: center;
+
+  .numbers {
+    font-family: $mono;
+    color: #999;
+    display: inline-block;
+    height: 24px;
+    margin: 0 15px;
+  }
+
+  .nav-item {
+    display: inline-block; 
+    height: 12px;
+    width: 12px;
+    position: relative;
+    
+    svg {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+    }
+  }
+
+  .nav-prev svg {
+    transform: translate(-50%,-50%) rotate(180deg);
+  }
+
+  .nav-next svg {
+    transform: translate(-50%,-50%) rotate(0deg);
+  }
+
+  &.onlyBackward .nav-next {
+    pointer-events: none;
+    opacity: .3;
+  }
+
+  &.onlyForward .nav-prev {
+    pointer-events: none;
+    opacity: .3;
+  }
+
+}
+
+svg {
+  margin: 0 auto 
+}

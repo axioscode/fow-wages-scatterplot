@@ -1,0 +1,121 @@
+
+
+#slider {
+  width: 40%;
+}
+
+.animation-control {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  cursor: pointer;
+  position: relative;
+  top: 5px;
+
+  * {
+    fill: #999;
+  }
+
+  &:hover * {
+    fill: #4a4a4a;
+  }
+
+}
+
+.interface-bar {
+  font-family: $mono;
+  text-align: center;
+  max-width: 400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 3;
+  margin-bottom: 15px;
+
+
+
+  .ac-pause { display: none; }
+  .ac-start { display: inline-block; }
+
+  &.is-playing {
+    .ac-pause { display: inline-block; }
+    .ac-start { display: none; }
+  }
+}
+
+
+
+.av-range-slider {
+  -webkit-appearance: none;
+  width: 100%;
+}
+
+.av-range-slider:focus {
+  outline: none;
+}
+.av-range-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 6px;
+  cursor: pointer;
+  background: #ddd;
+  border-radius: 2px;
+}
+.av-range-slider::-webkit-slider-thumb {
+  /*border: 1px solid #000000;*/
+  height: 14px;
+  width: 14px;
+  border-radius: 100%;
+  background: #eee;
+  border: 1px solid #999;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -4px;
+}
+.av-range-slider:focus::-webkit-slider-runnable-track {
+  background: #ddd;
+}
+.av-range-slider::-moz-range-track {
+  width: 100%;
+  height: 6px;
+  cursor: pointer;
+  background: #ddd;
+  border-radius: 2px;
+}
+.av-range-slider::-moz-range-thumb {
+  height: 14px;
+  width: 14px;
+  border-radius: 100%;
+  background: #eee;
+  border: 1px solid #999;
+  cursor: pointer;
+  margin-top: -4px;
+}
+.av-range-slider::-ms-track {
+  width: 100%;
+  height: 6px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  border-width: 8px 0;
+  color: transparent;
+}
+.av-range-slider::-ms-fill-lower {
+  background: #ddd;
+}
+.av-range-slider::-ms-fill-upper {
+  background: #ddd;
+}
+.av-range-slider::-ms-thumb {
+  height: 14px;
+  width: 14px;
+  border-radius: 100%;
+  background: #eee;
+  border: 1px solid #999;
+  cursor: pointer;
+  margin-top: -4px;
+}
+.av-range-slider:focus::-ms-fill-lower {
+  background: #ddd;
+}
+.av-range-slider:focus::-ms-fill-upper {
+  background: #ddd;
+}
