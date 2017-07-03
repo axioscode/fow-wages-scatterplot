@@ -2,10 +2,17 @@
 {{#content "main"}}
 
 <div class="container">
-	{{> arrow-nav }}
+	{{> buttons }}
 	{{> slider }}
-	<div class="scatterplot chart has-tooltip"></div>
+	{{> key }}
+
+	<div class="chart-div">
+		<div class="scatterplot chart has-tooltip"></div>
+		<img class='circle-key' src='img/circle-key.png'/>
+	</div>
 </div>
+
+<svg class="test"></svg>
 
 {{/content}}
 {{/extend}}

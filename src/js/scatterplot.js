@@ -11,7 +11,7 @@ class scatterplot {
         this.onReady = opts.onReady ? opts.onReady : null;
         this.data = opts.data ? opts.data : null;
         this.lookup = opts.lookup ? opts.lookup : null;
-        this.filter = opts.filter ? opts.filter : null;
+        this.currCat = opts.currCat;
 
         this.parseTime = d3.timeParse("%Y%m");
         this.formatTime = d3.timeFormat("%Y");
@@ -76,18 +76,23 @@ class scatterplot {
 
     }
 
+
     _setScales() {
 
-        this.percColor = d3.scaleLinear()
-            // .domain([-0.4557863, 0, 0.6024402])
-            .domain([-.5, 0, .5])
-            .range(['#b1290a', '#eee', '#01356e'])
+        // this.percColor = d3.scaleLinear()
+        //     // .domain([-0.4557863, 0, 0.6024402])
+        //     .domain([-.5, 0, .5])
+        //     .range(['#ff7921', '#008dc8', '#01356e'])
+
+        this.percColor = d3.scaleThreshold()
+            .domain([0])
+            .range(['#ff6602', '#551bb7'])
 
 
         let wageColors = {
-            "high": "#01356e",
-            "middle": "#9686f7",
-            "low": "#ff7921"
+            "high": "#027bb9",
+            "middle": "#846f55",
+            "low": "#b1290a"
         }
 
         this.colorByWage = function(d) {
@@ -147,7 +152,8 @@ class scatterplot {
             .tickFormat(d => {
                 return d > 0 ? `+${this.pctFormat(d)}` : this.pctFormat(d);
             })
-            .tickSize(-this.width);
+            .tickSize(-this.width)
+            .ticks(5);
 
         this.xAxis = d3.axisBottom(this.xScale)
             .tickSize(-this.height)
@@ -174,6 +180,11 @@ class scatterplot {
                 return d.y;
             });
 
+
+        this.circleKey = d3.select(".circle-key")
+            .style("left", `${this.margin.left + this.xScale(37)}px`)
+            .style("top", `${this.margin.top + this.yScale(-.15)}px`)
+
     }
 
     update() {
@@ -187,6 +198,7 @@ class scatterplot {
         // set up parent element and SVG
         this.element.innerHTML = "";
 
+        d3.select(this.element).classed(this.currCat, true);
 
         this.tt = d3.select(this.element).append("div").classed("tooltip", true);
 
@@ -252,13 +264,8 @@ class scatterplot {
             })
             .enter()
             .append("path")
-            .attr("class", d=> {
+            .attr("class", d => {
                 return `${this.lookup[d.id].wageCat} line`;
-            })
-            .style("stroke", d => {
-                let val = this.lookup[d.id].projected ? this.lookup[d.id].projected : null;
-                //return val ? this.percColor(val) : "#000";
-                return this.colorByWage(d);
             })
             .style("stroke-width", 1)
             .style("fill", "none")
@@ -266,79 +273,12 @@ class scatterplot {
         // this.jobTracks
         //     .attr("d", d => {
         //         let arr = this.lookup[d.id].lineArray;
-        //         // let pts = [arr[0], arr[arr.length-1]];
-
-        //         let trendArr = this.getLeastSquares(arr);
-
-        //         return this.trendLine(trendArr);
-
-
-        //         //return this.line(pts);
+        //         let pts = [arr[0], arr[arr.length - 1]];
+        //         return this.line(pts);
         //     });
-
 
         this.updateDots();
 
-    }
-
-
-
-
-    getLeastSquares(arr) {
-
-        let xSeries = arr.map(function(d) {
-            return d.wage;
-        });
-        let ySeries = arr.map(function(d) {
-            return d.annaulized;
-        });
-        var leastSquaresCoeff = this.leastSquares(xSeries, ySeries);
-
-        // apply the reults of the least squares regression
-        var x1 = this.xScale.domain()[0];
-        var y1 = leastSquaresCoeff[0] + leastSquaresCoeff[1];
-        var x2 = this.xScale.domain()[1];
-        var y2 = leastSquaresCoeff[0] * (this.xScale.domain()[1] - this.xScale.domain()[0]) + leastSquaresCoeff[1];
-        var trendData = [{
-            "x": x1,
-            "y": y1
-        }, {
-            "x": x2,
-            "y": y2
-        }];
-
-        return trendData;
-    }
-
-
-    leastSquares(xSeries, ySeries) {
-        var reduceSumFunc = function(prev, cur) {
-            return prev + cur;
-        };
-
-        var xBar = xSeries.reduce(reduceSumFunc) * 1.0 / xSeries.length;
-        var yBar = ySeries.reduce(reduceSumFunc) * 1.0 / ySeries.length;
-
-        var ssXX = xSeries.map(function(d) {
-                return Math.pow(d - xBar, 2);
-            })
-            .reduce(reduceSumFunc);
-
-        var ssYY = ySeries.map(function(d) {
-                return Math.pow(d - yBar, 2);
-            })
-            .reduce(reduceSumFunc);
-
-        var ssXY = xSeries.map(function(d, i) {
-                return (d - xBar) * (ySeries[i] - yBar);
-            })
-            .reduce(reduceSumFunc);
-
-        var slope = ssXY / ssXX;
-        var intercept = yBar - (xBar * slope);
-        var rSquare = Math.pow(ssXY, 2) / (ssXX * ssYY);
-
-        return [slope, intercept, rSquare];
     }
 
 
@@ -373,12 +313,9 @@ class scatterplot {
             })
             .attr("r", d => {
                 return this.circleScale(d.emp / Math.PI);
-            })
-            .attr("fill", d => {
-                let val = this.lookup[d.id].projected ? this.lookup[d.id].projected : null;
-                //return val ? this.percColor(val) : "#000";
-                return this.colorByWage(d);
             });
+
+        this.updateCat();
 
         this.jobs.exit().remove();
 
@@ -402,7 +339,7 @@ class scatterplot {
                 let xPos = d.xPos + this.margin.left;
                 let yPos = d.yPos + this.margin.top;
 
-                d.ind = this.lookup[d.id].industry_name;
+                d.lookup = this.lookup[d.id];
 
                 this.setTooltip.position(
                     d, [d.xPos + this.margin.left, d.yPos + this.margin.top], [this.width, this.height]
@@ -420,7 +357,38 @@ class scatterplot {
         //     })
 
 
+        
+
+
     }
+
+
+    updateCat() {
+
+        d3.selectAll(".key").classed("active", false);
+
+        if (this.currCat === "wages") {
+            d3.select(".key.wage-key").classed("active", true);
+        } else if (this.currCat === "projections") {
+            d3.select(".key.projection-key").classed("active", true);
+        }
+
+
+        this.jobs.attr("fill", d => {
+            let val = this.lookup[d.id].projected ? this.lookup[d.id].projected : null;
+
+            if (this.currCat === "wages") {
+                return this.colorByWage(d);
+            } else if (this.currCat === "projections") {
+                return this.percColor(val);
+            }
+
+            
+        });
+
+    }
+
+
 
 
 }

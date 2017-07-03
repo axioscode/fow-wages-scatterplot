@@ -59,28 +59,17 @@ let init = function(ttDiv) {
 			.html(d=> {
 				return `<div class="tooltip-inner">
 							<div class="close-button">×</div>
-							<h4 class="tt-header">${data.ind}</h4>
+							<h4 class="tt-header">${data.lookup.industry_name}</h4>
 							<div class="tt-row with-rule subhead">
-								<strong>Total insured</strong>
+								<strong>Avg. monthly emp.</strong>
 							</div>
 							<div class="tt-row with-rule">
-								<strong>2015:</strong>
-								<span>${10}</span>
+								<strong>Projected growth:</strong>
+								<span>${data.lookup.projected}</span>
 							</div>
 							<div class="tt-row">
-								<strong>Change from 2013:</strong>
-								<span>${10}</span>
-							</div>
-							<div class="tt-row with-rule subhead">
-								<strong>Health care jobs</strong>
-							</div>
-							<div class="tt-row with-rule">
-								<strong>2015:</strong>
-								<span>${10}</span>
-							</div>
-							<div class="tt-row">
-								<strong>Change from 2013:</strong>
-								<span>${10}</span>
+								<strong>Wage category:</strong>
+								<span>${data.lookup.wageCat}</span>
 							</div>
 						</div>`
 				});

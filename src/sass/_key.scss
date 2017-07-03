@@ -1,0 +1,52 @@
+
+@import 'feta';
+
+.key {
+
+	font-family: $mono;
+	color: $color-gray-600;
+	font-size: 12px;
+	display: none;
+
+	&.active {
+		display: inline-block;
+	}
+
+	.key-item {
+		display: inline-block;
+		padding: 2px 4px;
+
+		.swatch {
+			display: inline-block;
+			background-color: #333;
+			border-radius: 100%;
+			width: 12px;
+			height: 12px;
+			margin-right: 4px;
+		}
+
+		&.high .swatch {
+			background-color: #027bb9;
+		}
+
+		&.middle .swatch {
+			background-color: #846f55;
+		}
+
+		&.low .swatch {
+			background-color: #e15300;
+		}
+
+		&.grow .swatch {
+			background-color: #551bb7;
+		}
+
+		&.shrink .swatch {
+			background-color: #ff6602;
+		}
+
+	}
+
+
+}
+

@@ -42,20 +42,35 @@ class makeChart {
 
     init() {
 
-        this.cats = {
-            "all": "All industries",
-            "low": "Low wage industries",
-            "middle": "Middle wage industries",
-            "high": "High wage industries"
-        }
-
-        this.catsArray = Object.keys(this.cats);
-
         this.theScatterplot = new scatterplot({
             element: document.querySelector(`.scatterplot.chart`),
             data: monthsData,
-            lookup: industryLookup
+            lookup: industryLookup,
+            currCat: "wages"
         });
+
+
+
+        //DRAW CIRCLES TO SCALE FOR AI KEY
+        //console.log(this.theScatterplot.circleScale.domain());
+
+        // let thisVals = [100, 1000, 5000, 10000];
+
+        // d3.select("svg.test").selectAll(".kc")
+        // 	.data(thisVals).enter().append("circle")
+        // 	.classed("kc", true)
+        // 	.attr("cx", 100)
+        // 	.attr("cy", 100)
+        // 	.attr("r", d => {
+        // 		//return 4;
+        //         return this.theScatterplot.circleScale(d / Math.PI);
+        //     })
+        //     .style("stroke", "#ccc")
+        //     .style("stroke-width", 1)
+        //     .style("fill", "none");
+
+
+
     }
 
     _setNav() {
@@ -103,39 +118,34 @@ class makeChart {
         this.parseTime = d3.timeParse("%Y%m");
         this.formatDate = d3.timeFormat("%b %Y");
 
-        this.nav = d3.select("#arrowNav");
-        this.nav.selectAll(".total-count").html(this.catsArray.length);
-        this.nav.selectAll(".nav-increment").on("click", function() {
-        	let dir = d3.select(this).attr("data-direction") === "forward" ? 1 : -1;
-        	_this.updateCat(dir);
-        });
-
         //this.updateMonth();
+
+        let cats = ["wages", "projections"];
+
+        this.buttons = d3.selectAll("button").on("click", function() {
+        	let val = d3.select(this).attr("val");
+
+        	_this.theScatterplot.currCat = val;
+        	_this.theScatterplot.updateCat();
+
+        	_this.buttons.classed("active", false);
+        	d3.select(this).classed("active", true);
+
+        	cats.forEach(c=> {
+        		d3.select(".scatterplot.chart").classed(c, false);
+        	})
+
+        	d3.select(".scatterplot.chart").classed(val, true);
+        	
+
+
+        })
+
+
         this.timer.start();
+
+
     }
-
-
-   	updateCat(dir) {
-   		this.curr += dir;
-
-   		if (this.curr >= this.catsArray.length -1) {
-   			this.curr = this.catsArray.length - 1;
-   		} else if (this.curr <= 0) {
-   			this.curr = 0;
-   		}
-
-   		this.currCat = this.catsArray[this.curr];
-
-   		this.nav.selectAll(".chart-hed").html(this.cats[this.currCat]);
-   		this.nav.selectAll(".current-index").html(this.curr+1);
-
-   		this.catsArray.forEach(c=>{
-   			d3.select(".chart").classed(c, false);
-   		});
-
-   		d3.select(".chart").classed(this.currCat, true);
-   		
-   	}
 
 
 
