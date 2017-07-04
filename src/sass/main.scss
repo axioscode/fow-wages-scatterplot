@@ -10,6 +10,9 @@
 // 	outline: 1px solid tomato;
 // }
 
+svg.test {
+	display: none;
+}
 
 .search-container {
 	position: absolute;
@@ -21,7 +24,8 @@
 
 .container {
 	margin: 0 auto;
-	max-width: 700px;
+	//max-width: 700px;
+	width: 100%;
 	text-align: center;
 	position: relative;
 }
