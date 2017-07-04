@@ -10,7 +10,7 @@ import lineChart from "./lineChart";
 import scatterplot from "./scatterplot";
 // import indeedData from '../data/output.json';
 import makeTimer from "./makeTimer";
-
+import searchBar from "./dropdown";
 import industryLookup from '../data/industryLookup.json';
 import monthsData from '../data/monthsData.json';
 
@@ -22,12 +22,6 @@ function main() {
 }
 
 
-
-
-
-d3.select(window).on("resize", d => {
-    //theScatterplot.update();
-});
 
 
 
@@ -49,7 +43,23 @@ class makeChart {
             currCat: "wages"
         });
 
+        let jobsArray = [];
 
+        Object.keys(industryLookup).forEach(d=> {
+        	let obj = {
+        		id : d,
+        		val : industryLookup[d].industry_name
+        	}
+        	jobsArray.push(obj);
+        });
+
+        let dropdown = new searchBar({
+            vizData: jobsArray,
+            selector: ".header-search",
+            placeholder: "All industries",
+            noResultsText: "No match found",
+            context: this.theScatterplot
+        });
 
         //DRAW CIRCLES TO SCALE FOR AI KEY
         //console.log(this.theScatterplot.circleScale.domain());
@@ -76,8 +86,8 @@ class makeChart {
     _setNav() {
         let _this = this;
 
-        this.interfaceContainer = d3.select('.interface-bar');
-        this.interfaceContainer.classed('is-playing', true);
+        this.sliderDiv = d3.select('.interface-bar');
+        this.sliderDiv.classed('is-playing', true);
 
         let months = this.theScatterplot.months;
 
@@ -89,7 +99,7 @@ class makeChart {
                 _this.index++;
               
                 if (_this.index >= (months.length - 2)) {
-                	_this.timer.pause();
+                	pauseTimer();
                 }
 
                 _this.updateMonth();
@@ -97,20 +107,34 @@ class makeChart {
         });
 
         d3.select('.ac-start').on('click', () => {
-            //analytics.trackEvent('playButton','single');
-            this.interfaceContainer.classed('is-playing', true);
-            this.timer.start();
-        })
+        	if (_this.index >= (months.length - 2)) {
+            	_this.index = 0;
+            }
+            startTimer();
+        });
 
         d3.select('.ac-pause').on('click', () => {
-            //analytics.trackEvent('pauseButton','single');
-            this.interfaceContainer.classed('is-playing', false);
-            this.timer.pause();
-        })
+            pauseTimer();
+        });
+
+       	function startTimer() {
+       		_this.sliderDiv.classed('is-playing', true);
+            _this.timer.start();
+       	}
+
+       	function pauseTimer() {
+       		_this.sliderDiv.classed('is-playing', false);
+            _this.timer.pause();
+
+            // if (_this.index >= (months.length - 2)) {
+            // 	_this.timer.pause();
+            // }
+
+
+       	}
 
         this.slider.on('click change input', function() {
-            _this.interfaceContainer.classed('is-playing', false);
-            _this.timer.pause();
+            pauseTimer();
             _this.index = +this.value;
             _this.updateMonth(true);
         });
@@ -118,11 +142,9 @@ class makeChart {
         this.parseTime = d3.timeParse("%Y%m");
         this.formatDate = d3.timeFormat("%b %Y");
 
-        //this.updateMonth();
-
         let cats = ["wages", "projections"];
 
-        this.buttons = d3.selectAll("button").on("click", function() {
+        this.buttons = d3.selectAll(".cat-nav button").on("click", function() {
         	let val = d3.select(this).attr("val");
 
         	_this.theScatterplot.currCat = val;
@@ -137,13 +159,9 @@ class makeChart {
 
         	d3.select(".scatterplot.chart").classed(val, true);
         	
-
-
-        })
-
+        });
 
         this.timer.start();
-
 
     }
 
@@ -162,13 +180,13 @@ class makeChart {
 
     }
 
-
-
-
-
-
-
 }
 
 
 let theChart = new makeChart();
+
+
+d3.select(window).on("resize", d => {
+    theChart.theScatterplot.update();
+});
+

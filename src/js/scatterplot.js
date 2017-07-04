@@ -24,12 +24,11 @@ class scatterplot {
 
     }
 
-
     _setData() {
         this.series = [];
 
-        this.industries = Object.keys(this.lookup);
 
+        this.industries = Object.keys(this.lookup);
         this.industries.forEach(ind => {
             this.lookup[ind].lineArray = [];
         });
@@ -63,6 +62,10 @@ class scatterplot {
 
     _setDimensions() {
         // define width, height and margin
+
+        this.isMobile = window.innerWidth <= 375 ? true : false;
+
+        this.aspectHeight = this.isMobile ? 1.2 : this.aspectHeight;
 
         this.margin = {
             top: 0,
@@ -135,6 +138,8 @@ class scatterplot {
             })
         ]);
 
+        //this.yScale.domain([-.1, .1])
+
         this.xScale.domain([
             d3.min(this.series, function(c) {
                 return d3.min(c, function(d) {
@@ -171,19 +176,6 @@ class scatterplot {
             .y(d => {
                 return this.yScale(d.annualized)
             });
-
-        this.trendLine = d3.line()
-            .x(d => {
-                return d.x;
-            })
-            .y(d => {
-                return d.y;
-            });
-
-
-        this.circleKey = d3.select(".circle-key")
-            .style("left", `${this.margin.left + this.xScale(37)}px`)
-            .style("top", `${this.margin.top + this.yScale(-.15)}px`)
 
     }
 
@@ -250,7 +242,25 @@ class scatterplot {
             .attr("x1", 0)
             .attr("x2", this.width)
             .attr("y1", this.yScale(0))
-            .attr("y2", this.yScale(0));
+            .attr("y2", this.yScale(0))
+
+        this.plot.append("text")
+            .attr("class", "range-label")
+            .attr("y", this.yScale(.01))
+            .attr("x", this.width)
+            .attr("text-anchor", "end")
+            .text("Growing ↑");
+
+        this.plot.append("text")
+            .attr("class", "range-label")
+            .attr("y", this.yScale(-.02))
+            .attr("x", this.width)
+            .attr("text-anchor", "end")
+            .text("Shrinking ↓");
+
+        this.circleKey = d3.select(".circle-key")
+            .style("right", `${this.width - (this.margin.right + this.xScale(50))}px`)
+            .style("bottom", `${this.height - (this.margin.bottom + this.yScale(-.15))}px`)
 
         this.dots = this.plot.append("g")
             .attr("class", "dots-g");
@@ -258,24 +268,33 @@ class scatterplot {
         this.tracks = this.plot.append("g")
             .attr("class", "tracks-g");
 
-        this.jobTracks = this.tracks.selectAll(`.line`)
+        this.jobTracks = this.tracks.selectAll(`.track`)
             .data(this.series[this.index], d => {
                 return d.id;
             })
             .enter()
             .append("path")
             .attr("class", d => {
-                return `${this.lookup[d.id].wageCat} line`;
+                return `${this.lookup[d.id].wageCat} track`;
             })
-            .style("stroke-width", 1)
+            .style("stroke-width", 2)
             .style("fill", "none")
 
-        // this.jobTracks
-        //     .attr("d", d => {
-        //         let arr = this.lookup[d.id].lineArray;
-        //         let pts = [arr[0], arr[arr.length - 1]];
-        //         return this.line(pts);
-        //     });
+        this.jobTracks
+            .attr("d", d => {
+                let arr = this.lookup[d.id].lineArray;
+                let pts = [arr[0], arr[arr.length - 1]];
+                return this.line(arr);
+            })
+            .style("stroke", d => {
+                let val = this.lookup[d.id].projected ? this.lookup[d.id].projected : null;
+
+                if (this.currCat === "wages") {
+                    return this.colorByWage(d);
+                } else if (this.currCat === "projections") {
+                    return this.percColor(val);
+                }
+            });
 
         this.updateDots();
 
@@ -313,9 +332,18 @@ class scatterplot {
             })
             .attr("r", d => {
                 return this.circleScale(d.emp / Math.PI);
+            })
+            .attr("fill", d => {
+                let val = this.lookup[d.id].projected ? this.lookup[d.id].projected : null;
+
+                if (this.currCat === "wages") {
+                    return this.colorByWage(d);
+                } else if (this.currCat === "projections") {
+                    return this.percColor(val);
+                }
             });
 
-        this.updateCat();
+        //this.updateCat();
 
         this.jobs.exit().remove();
 
@@ -335,7 +363,6 @@ class scatterplot {
             });
 
         this.jobs.on("mouseover", d => {
-
                 let xPos = d.xPos + this.margin.left;
                 let yPos = d.yPos + this.margin.top;
 
@@ -345,22 +372,49 @@ class scatterplot {
                     d, [d.xPos + this.margin.left, d.yPos + this.margin.top], [this.width, this.height]
                 )
 
-                //theNode.classed('is-focus',true).raise()
+
             })
             .on("mouseout", d => {
                 this.setTooltip.deposition();
             })
 
-        // this.jobTracks.attr("d", d => {
-        //         let arr = this.lookup[d.id].lineArray.slice(0, this.index);
-        //         return this.line(arr);
-        //     })
+        // this.jobs.on("click", d=> {
+        //         console.log(d);
+        //     });
+
+        this.jobs.on("click", function(d) {
+            let sel = d3.select(this);
+            _this.highlight(sel, d.id);
+        });
+
+    }
 
 
-        
+
+    highlight(sel, id) {
+
+        if (id) {
+            this.jobs.classed("inactive", true).classed("active", false);
+            sel.classed("inactive", false).classed("active", true);
+
+            this.jobTracks.classed("active", false);
+            let activeTrack = this.jobTracks.filter(t => {
+                    return t.id === id;
+                })
+                .classed("active", true);
+
+            d3.select("button.clear").classed("active", true);
+            d3.select("#state-select").property('value', id);
+        } else {
+            this.jobs.classed("inactive", false).classed("active", false);
+            this.jobTracks.classed("active", false);
+            d3.select("button.clear").classed("active", false);
+            d3.select("#state-select").property('value', 'default');
+        }
 
 
     }
+
 
 
     updateCat() {
@@ -382,9 +436,19 @@ class scatterplot {
             } else if (this.currCat === "projections") {
                 return this.percColor(val);
             }
-
-            
         });
+
+
+        this.jobTracks
+            .style("stroke", d => {
+                let val = this.lookup[d.id].projected ? this.lookup[d.id].projected : null;
+
+                if (this.currCat === "wages") {
+                    return this.colorByWage(d);
+                } else if (this.currCat === "projections") {
+                    return this.percColor(val);
+                }
+            });
 
     }
 

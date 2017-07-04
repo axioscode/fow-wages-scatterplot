@@ -4,11 +4,20 @@
 @import '_buttons';
 @import '_tooltip';
 @import '_key';
+@import '_native-select';
 
 // div {
 // 	outline: 1px solid tomato;
 // }
 
+
+.search-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 100;
+}
 
 .container {
 	margin: 0 auto;
@@ -77,15 +86,31 @@ h2 {
 		transition: opacity .1s ease-in-out;
 	   -moz-transition: opacity .1s ease-in-out;
 	   -webkit-transition: opacity .1s ease-in-out;
+
+	   &.inactive {
+	   	opacity: .1;
+	   }
+
+	   &.active {
+	   	stroke: #333;
+	   }
+
+
 	}
 
-	.line {
+	.track {
 		transition: opacity .1s ease-in-out;
 	   -moz-transition: opacity .1s ease-in-out;
 	   -webkit-transition: opacity .1s ease-in-out;
-	   stroke-opacity:0.5;
-	   stroke-width: 1px;
-	   stroke: #ccc;
+	   // stroke-opacity: 0.3;
+	   //stroke: #ccc;
+	   opacity: 0;
+
+	   &.active {
+	   	opacity: .5;
+	   }
+
+	   
 	}
 
 	&.wages {
@@ -105,8 +130,6 @@ h2 {
 		// }
 
 	}
-	
-
 
 	.axis {
 
@@ -144,6 +167,13 @@ h2 {
 	.zero-line {
 		stroke: $color-gray-700 !important;
 		stroke-width: 2;
+	}
+
+	.range-label {
+		font-family: $mono;
+		fill: $color-gray-700 !important;
+		font-size: 12px;
+		letter-spacing: .5px;
 	}
 
 	.recession {
