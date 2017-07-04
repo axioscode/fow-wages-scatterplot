@@ -17,14 +17,6 @@ import monthsData from '../data/monthsData.json';
 
 document.addEventListener("DOMContentLoaded", main());
 
-function main() {
-    var pymChild = new pym.Child();
-}
-
-
-
-
-
 class makeChart {
 
     constructor(opts) {
@@ -45,12 +37,12 @@ class makeChart {
 
         let jobsArray = [];
 
-        Object.keys(industryLookup).forEach(d=> {
-        	let obj = {
-        		id : d,
-        		val : industryLookup[d].industry_name
-        	}
-        	jobsArray.push(obj);
+        Object.keys(industryLookup).forEach(d => {
+            let obj = {
+                id: d,
+                val: industryLookup[d].industry_name
+            }
+            jobsArray.push(obj);
         });
 
         let dropdown = new searchBar({
@@ -97,9 +89,9 @@ class makeChart {
             speed: 200,
             onUpdate: function() {
                 _this.index++;
-              
+
                 if (_this.index >= (months.length - 2)) {
-                	pauseTimer();
+                    pauseTimer();
                 }
 
                 _this.updateMonth();
@@ -107,8 +99,8 @@ class makeChart {
         });
 
         d3.select('.ac-start').on('click', () => {
-        	if (_this.index >= (months.length - 2)) {
-            	_this.index = 0;
+            if (_this.index >= (months.length - 2)) {
+                _this.index = 0;
             }
             startTimer();
         });
@@ -117,13 +109,13 @@ class makeChart {
             pauseTimer();
         });
 
-       	function startTimer() {
-       		_this.sliderDiv.classed('is-playing', true);
+        function startTimer() {
+            _this.sliderDiv.classed('is-playing', true);
             _this.timer.start();
-       	}
+        }
 
-       	function pauseTimer() {
-       		_this.sliderDiv.classed('is-playing', false);
+        function pauseTimer() {
+            _this.sliderDiv.classed('is-playing', false);
             _this.timer.pause();
 
             // if (_this.index >= (months.length - 2)) {
@@ -131,7 +123,7 @@ class makeChart {
             // }
 
 
-       	}
+        }
 
         this.slider.on('click change input', function() {
             pauseTimer();
@@ -145,20 +137,20 @@ class makeChart {
         let cats = ["wages", "projections"];
 
         this.buttons = d3.selectAll(".cat-nav button").on("click", function() {
-        	let val = d3.select(this).attr("val");
+            let val = d3.select(this).attr("val");
 
-        	_this.theScatterplot.currCat = val;
-        	_this.theScatterplot.updateCat();
+            _this.theScatterplot.currCat = val;
+            _this.theScatterplot.updateCat();
 
-        	_this.buttons.classed("active", false);
-        	d3.select(this).classed("active", true);
+            _this.buttons.classed("active", false);
+            d3.select(this).classed("active", true);
 
-        	cats.forEach(c=> {
-        		d3.select(".scatterplot.chart").classed(c, false);
-        	})
+            cats.forEach(c => {
+                d3.select(".scatterplot.chart").classed(c, false);
+            })
 
-        	d3.select(".scatterplot.chart").classed(val, true);
-        	
+            d3.select(".scatterplot.chart").classed(val, true);
+
         });
 
         this.timer.start();
@@ -183,10 +175,14 @@ class makeChart {
 }
 
 
-let theChart = new makeChart();
 
+function main() {
+    var pymChild = new pym.Child();
 
-d3.select(window).on("resize", d => {
-    theChart.theScatterplot.update();
-});
+    let theChart = new makeChart();
 
+    d3.select(window).on("resize", d => {
+        theChart.theScatterplot.update();
+    });
+
+}
