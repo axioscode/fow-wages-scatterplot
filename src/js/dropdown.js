@@ -13,34 +13,44 @@ function searchBar(vizConfig) {
     let placeholder = vizConfig.placeholder || "Search for industry..."; // string for placeholder
     let noResultsText = vizConfig.placeholder || "No match found";
 
-    vizConfig.vizData.sort(function(a, b) {
+    let sectors = [];
 
-        var nameA = a.val.toUpperCase(); // ignore upper and lowercase
-        var nameB = b.val.toUpperCase(); // ignore upper and lowercase
-
-
-
-        if (nameA < nameB) {
-            return -1;
+    vizConfig.vizData.forEach(d=> {
+        if (sectors.indexOf(d.sector) < 0) {
+            sectors.push(d.sector);
         }
-        if (nameA > nameB) {
-            return 1;
-        }
-
-        // names must be equal
-        return 0;
-
     });
 
-    d3.select(vizConfig.selector)
+    sectors.sort((a,b) => {
+        return sortArray(a,b);
+    });
+
+    vizConfig.vizData.sort(function(a, b) {
+        return sortArray(a.val, b.val);
+    });
+
+    let optGroups = d3.select(vizConfig.selector)
         .insert("div", ":first-child")
         .attr("class", "header-search")
         .append("select")
         .attr("id", "state-select")
-        .attr("data-placeholder", placeholder)
+        .html(d=> {
+            return `<option value="default">${vizConfig.placeholder}</option>`;
+        })
         //.classed("chosen-select", true)
-        .selectAll("option")
-        .data([''].concat(vizConfig.vizData))
+        .selectAll("optgroup")
+        .data(sectors)
+        .enter().append("optgroup")
+        .attr("label", sector=> {
+            return sector;
+        });
+
+    let opts = optGroups.selectAll("option")
+        .data(sector => {
+            return vizConfig.vizData.filter(d=> {
+                return d.sector === sector;
+            })
+        })
         .enter().append("option")
         .attr("value", "default")
         .text(function(d) {
@@ -56,21 +66,22 @@ function searchBar(vizConfig) {
             } else {
                 return "default";
             }
-        })
+        });
+        
 
     d3.select("#state-select")
         .on("change", function() {
             let val = d3.select(this).property('value');
             val = val === "default" ? null : val;
 
-            let sel = vizConfig.context.plot.selectAll(".dot").filter(d=> {
+            let sel = vizConfig.context.plot.selectAll(".dot").filter(d => {
                 return d.id === val;
             });
 
             vizConfig.context.highlight(sel, val);
         });
 
-    d3.select("button.clear").on("click", d=> {
+    d3.select("button.clear").on("click", d => {
 
         d3.select("#state-select").property('value', 'default');
 
@@ -78,19 +89,22 @@ function searchBar(vizConfig) {
     });
 
 
-    // $(`${vizConfig.selector} select`).chosen({
-    //         no_results_text: noResultsText
-    //     })
-    //     .change(function(e, params) {
-    //         let fips = params.selected;
-    //         vizConfig.context.setActive(fips, "dd");
+    function sortArray(a,b) {
+        a = a.toUpperCase(); // ignore upper and lowercase
+        b = b.toUpperCase(); // ignore upper and lowercase
 
-    //         // theTooltip.deactivate();
-    //         // theTooltip.activate(theConty, true);
-    //     });
+        if (a < b) {
+            return -1;
+        }
+        if (a > b) {
+            return 1;
+        }
 
-    // d3.select(".chosen-container.chosen-container-single")
-    //     .style("width", "95%")
+        // names must be equal
+        return 0;
+    }
+
+
 }
 
 

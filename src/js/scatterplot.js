@@ -64,8 +64,8 @@ class scatterplot {
         // define width, height and margin
 
         this.isMobile = window.innerWidth <= 375 ? true : false;
-
         this.aspectHeight = this.isMobile ? 1.2 : this.aspectHeight;
+        this.scaleFactor = this.isMobile ? .5 : 1;
 
         this.margin = {
             top: 0,
@@ -258,10 +258,13 @@ class scatterplot {
             .attr("text-anchor", "end")
             .text("Shrinking ↓");
 
-        this.circleKey = d3.select(".circle-key")
-            .style("right", `${this.width - (this.margin.right + this.xScale(50))}px`)
-            .style("bottom", `${this.height - (this.margin.bottom + this.yScale(-.15))}px`)
+        this.keyDiv = d3.selectAll(".circle-key")
+            .style("right", `${this.margin.right + 30}px`)
+            .style("bottom", `${25}%`)
 
+        d3.select(".circle-key.desktop").classed("active", !this.isMobile);
+        d3.select(".circle-key.mobile").classed("active", this.isMobile);
+   
         this.dots = this.plot.append("g")
             .attr("class", "dots-g");
 
@@ -331,7 +334,7 @@ class scatterplot {
                 return this.yScale(d.annualized);
             })
             .attr("r", d => {
-                return this.circleScale(d.emp / Math.PI);
+                return this.circleScale(d.emp / Math.PI) * this.scaleFactor;
             })
             .attr("fill", d => {
                 let val = this.lookup[d.id].projected ? this.lookup[d.id].projected : null;
@@ -359,7 +362,7 @@ class scatterplot {
                 return d.yPos;
             })
             .attr("r", d => {
-                return this.circleScale(d.emp / Math.PI);
+                return this.circleScale(d.emp / Math.PI)  * this.scaleFactor;
             });
 
         this.jobs.on("mouseover", d => {

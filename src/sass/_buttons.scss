@@ -52,3 +52,20 @@
     //background-color: $color-gray-200;
     // background-color: $color-gray-200;
 }
+
+
+
+
+
+@media(max-width: 375px) {
+
+    .btn-group button {
+        padding: 7px 0px; /* Some padding */
+        font-size: 10px;
+        letter-spacing: 0;
+        width: 120px;
+    }
+    
+}
+
+

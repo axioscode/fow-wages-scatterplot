@@ -11,15 +11,17 @@
 // }
 
 svg.test {
-	display: none;
+	//display: none;
 }
 
 .search-container {
-	position: absolute;
-	top: 4px;
-	left: 0;
-	width: 100%;
-	z-index: 100;
+	// position: absolute;
+	// top: 4px;
+	// left: 0;
+	// width: 100%;
+	// z-index: 100;
+
+	margin-bottom: 15px;
 }
 
 .container {
@@ -33,7 +35,25 @@ svg.test {
 
 .btn-group {
     display: inline-block;
-    margin: 10px auto;
+    margin: 0 auto;
+}
+
+.circle-key {
+	position: absolute;
+	display: none;
+
+	&.active {
+		display: block;
+	}
+
+	&.desktop {
+		width: 180px;
+	}
+
+	&.mobile {
+		width: 150px;
+	}	
+
 }
 
 
@@ -60,10 +80,6 @@ h2 {
 	position: relative;
 }
 
-.circle-key {
-	position: absolute;
-	width: 180px;
-}
 
 .chart {
 	width: 100%;
@@ -88,17 +104,26 @@ h2 {
 		stroke-width: 1;
 		fill-opacity: .8;
 		transition: opacity .1s ease-in-out;
-	   -moz-transition: opacity .1s ease-in-out;
-	   -webkit-transition: opacity .1s ease-in-out;
+	    -moz-transition: opacity .1s ease-in-out;
+	    -webkit-transition: opacity .1s ease-in-out;
 
-	   &.inactive {
-	   	opacity: .1;
-	   }
+		&.inactive {
+			fill-opacity: .1;
+			stroke-opacity: .1;
 
-	   &.active {
-	   	stroke: #333;
-	   }
+			&:hover {
+				stroke-opacity: 1;
+				fill-opacity: .3;
+			}
 
+		}
+
+		&.active, &:hover {
+			stroke-opacity: 1;
+			stroke: #333;
+		}
+
+		
 
 	}
 
@@ -106,9 +131,8 @@ h2 {
 		transition: opacity .1s ease-in-out;
 	   -moz-transition: opacity .1s ease-in-out;
 	   -webkit-transition: opacity .1s ease-in-out;
-	   // stroke-opacity: 0.3;
-	   //stroke: #ccc;
 	   opacity: 0;
+	   pointer-events: none;
 
 	   &.active {
 	   	opacity: .5;
@@ -189,18 +213,7 @@ h2 {
 }
 
 
-.category-nav {
 
-	font-family: $mono;
-	font-size: 14px;
-	color: $color-gray-900;
-
-	input {
-		-webkit-appearance: checkbox;
-	    border-radius: 0;
-	}
-
-}
 
 
 

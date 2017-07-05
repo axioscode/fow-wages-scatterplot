@@ -42,8 +42,10 @@ function main() {
             Object.keys(industryLookup).forEach(d => {
                 let obj = {
                     id: d,
-                    val: industryLookup[d].industry_name
+                    val: industryLookup[d].industry_name,
+                    sector : industryLookup[d].sector
                 }
+
                 jobsArray.push(obj);
             });
 
@@ -58,20 +60,19 @@ function main() {
             //DRAW CIRCLES TO SCALE FOR AI KEY
             //console.log(this.theScatterplot.circleScale.domain());
 
-            // let thisVals = [100, 1000, 5000, 10000];
+            let thisVals = [100, 1000, 5000, 10000];
 
-            // d3.select("svg.test").selectAll(".kc")
-            // 	.data(thisVals).enter().append("circle")
-            // 	.classed("kc", true)
-            // 	.attr("cx", 100)
-            // 	.attr("cy", 100)
-            // 	.attr("r", d => {
-            // 		//return 4;
-            //         return this.theScatterplot.circleScale(d / Math.PI);
-            //     })
-            //     .style("stroke", "#ccc")
-            //     .style("stroke-width", 1)
-            //     .style("fill", "none");
+            d3.select("svg.test").selectAll(".kc")
+            	.data(thisVals).enter().append("circle")
+            	.classed("kc", true)
+            	.attr("cx", 100)
+            	.attr("cy", 100)
+            	.attr("r", d => {
+                    return this.theScatterplot.circleScale(d / Math.PI) * this.theScatterplot.scaleFactor;
+                })
+                .style("stroke", "#ccc")
+                .style("stroke-width", 1)
+                .style("fill", "none");
 
 
 
