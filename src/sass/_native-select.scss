@@ -63,7 +63,7 @@
 }
 
 button.clear {
-    padding: 9px 6px;
+    padding: 8px 6px;
     font-family: $mono;
     font-size: 11px;
     top: 0px;
@@ -78,6 +78,7 @@ button.clear {
 
     &.active {
         display: inline-block;
+        margin-left: 4px;
     }
 }
 

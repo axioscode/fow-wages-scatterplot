@@ -260,7 +260,7 @@ class scatterplot {
 
         this.keyDiv = d3.selectAll(".circle-key")
             .style("right", `${this.margin.right + 30}px`)
-            .style("bottom", `${25}%`)
+            .style("bottom", `25%`)
 
         d3.select(".circle-key.desktop").classed("active", !this.isMobile);
         d3.select(".circle-key.mobile").classed("active", this.isMobile);
@@ -277,11 +277,14 @@ class scatterplot {
             })
             .enter()
             .append("path")
+            .each(d=> {
+                d.sector = this.lookup[d.id].sector;
+            })
             .attr("class", d => {
                 return `${this.lookup[d.id].wageCat} track`;
             })
             .style("stroke-width", 2)
-            .style("fill", "none")
+            .style("fill", "none");
 
         this.jobTracks
             .attr("d", d => {
@@ -319,6 +322,7 @@ class scatterplot {
 
         this.jobs = this.dots.selectAll(`.dot`)
             .data(this.series[this.index], d => {
+                d.sector = this.lookup[d.id].sector;
                 return d.id;
             });
 
@@ -365,20 +369,23 @@ class scatterplot {
                 return this.circleScale(d.emp / Math.PI)  * this.scaleFactor;
             });
 
-        this.jobs.on("mouseover", d => {
-                let xPos = d.xPos + this.margin.left;
-                let yPos = d.yPos + this.margin.top;
+        this.jobs.on("mouseover", function(d) {
+                let xPos = d.xPos + _this.margin.left;
+                let yPos = d.yPos + _this.margin.top;
 
-                d.lookup = this.lookup[d.id];
+                d.lookup = _this.lookup[d.id];
 
-                this.setTooltip.position(
-                    d, [d.xPos + this.margin.left, d.yPos + this.margin.top], [this.width, this.height]
-                )
+                _this.setTooltip.position(
+                    d, [d.xPos + _this.margin.left, d.yPos + _this.margin.top], [_this.width, _this.height]
+                );
+
+                d3.select(this).raise();
 
 
             })
-            .on("mouseout", d => {
-                this.setTooltip.deposition();
+            .on("mouseout", function(d) {
+                _this.setTooltip.deposition();
+                d3.select(this).lower();
             })
 
         // this.jobs.on("click", d=> {
@@ -386,6 +393,9 @@ class scatterplot {
         //     });
 
         this.jobs.on("click", function(d) {
+
+            console.log(d);
+
             let sel = d3.select(this);
             _this.highlight(sel, d.id);
         });
@@ -402,7 +412,7 @@ class scatterplot {
 
             this.jobTracks.classed("active", false);
             let activeTrack = this.jobTracks.filter(t => {
-                    return t.id === id;
+                    return t.sector === id;
                 })
                 .classed("active", true);
 

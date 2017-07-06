@@ -43,7 +43,8 @@ function main() {
                 let obj = {
                     id: d,
                     val: industryLookup[d].industry_name,
-                    sector : industryLookup[d].sector
+                    sector : industryLookup[d].sector,
+                    sectorKey : industryLookup[d].sectorKey
                 }
 
                 jobsArray.push(obj);
