@@ -17,6 +17,8 @@ class scatterplot {
         this.formatTime = d3.timeFormat("%Y");
         this.pctFormat = d3.format(".0%");
 
+        this.ttLive = false;
+
         this.index = 0;
 
         this._setData();
@@ -41,6 +43,7 @@ class scatterplot {
             let arr = this.data[m];
 
             arr.forEach(d => {
+                d.m = m;
                 d.annualized = (d.emp - d.yrAgo) / d.yrAgo;
             });
 
@@ -165,7 +168,9 @@ class scatterplot {
             .tickFormat(d => {
                 let str = `$${d}`;
                 return str;
-            });
+            })
+            .ticks(this.isMobile ? 5 : 10);
+
 
 
         this.line = d3.line()
@@ -206,12 +211,6 @@ class scatterplot {
         this.plot = this.svg.append('g')
             .attr('transform', `translate(${this.margin.left},${this.margin.top})`)
             .attr("class", "chart-g");
-
-        this.tt = d3.select(this.element).append("div")
-            .classed("tt", true)
-            .style("left", `${this.margin.left + 15}px`)
-            .style("bottom", `${this.margin.bottom + 15}px`)
-            .html("I am a the name of a job. Maybe long.")
 
         this.plot.append("g")
             .attr("class", "axis x-axis")
@@ -314,6 +313,10 @@ class scatterplot {
 
         let dur = slider ? 50 : 200;
 
+        if (this.isMobile) {
+            dur = 0;
+        }
+
         this.t = d3.transition()
             .ease(d3.easeLinear)
             .duration(dur);
@@ -375,59 +378,79 @@ class scatterplot {
 
                 d.lookup = _this.lookup[d.id];
 
-                _this.setTooltip.position(
-                    d, [d.xPos + _this.margin.left, d.yPos + _this.margin.top], [_this.width, _this.height]
-                );
+                if (!_this.ttLive) {
+                    _this.setTooltip.position(
+                        d, [d.xPos + _this.margin.left, d.yPos + _this.margin.top], [_this.width, _this.height]
+                    );
+                }
+
+                //_this.tt.classed("persistent", this.isMobile);
 
                 d3.select(this).raise();
 
 
             })
             .on("mouseout", function(d) {
-                _this.setTooltip.deposition();
-                d3.select(this).lower();
+
+                if (!_this.ttLive) {
+                    _this.setTooltip.deposition();
+                    d3.select(this).lower();
+                }
+                
             })
 
-        // this.jobs.on("click", d=> {
-        //         console.log(d);
-        //     });
-
         this.jobs.on("click", function(d) {
-
-            console.log(d);
-
             let sel = d3.select(this);
-            _this.highlight(sel, d.id);
+            _this.setHighlight(sel, d.id, true);
+        });
+
+
+        this.tt.on("click", d=> {
+            this.clearHighlight();
         });
 
     }
 
 
+    setHighlight(sel, id, persist) {
+        this.tt.classed("persistent", persist);
 
-    highlight(sel, id) {
+        this.jobs.classed("inactive", true).classed("active", false);
+        sel.classed("inactive", false).classed("active", true);
+        this.jobTracks.classed("active", false);
+        let activeTrack = this.jobTracks.filter(t => {
+                return t.id === id;
+            })
+            .classed("active", true);
 
-        if (id) {
-            this.jobs.classed("inactive", true).classed("active", false);
-            sel.classed("inactive", false).classed("active", true);
+        d3.select("button.clear").classed("active", true);
+        d3.select("#industry-select").property('value', id);
 
-            this.jobTracks.classed("active", false);
-            let activeTrack = this.jobTracks.filter(t => {
-                    return t.sector === id;
-                })
-                .classed("active", true);
+        if (persist) {
 
-            d3.select("button.clear").classed("active", true);
-            d3.select("#state-select").property('value', id);
+            let datum = sel.datum();
+            datum.lookup = this.lookup[id];
+            this.setTooltip.position(
+                datum, [datum.xPos + this.margin.left, datum.yPos + this.margin.top], [this.width, this.height]
+            );
+
+            this.ttLive = true;
         } else {
-            this.jobs.classed("inactive", false).classed("active", false);
-            this.jobTracks.classed("active", false);
-            d3.select("button.clear").classed("active", false);
-            d3.select("#state-select").property('value', 'default');
+            this.ttLive = false;
         }
 
 
     }
 
+
+    clearHighlight() {
+        this.ttLive = false;
+        this.setTooltip.deposition();
+        this.jobs.classed("inactive", false).classed("active", false);
+        this.jobTracks.classed("active", false);
+        d3.select("button.clear").classed("active", false);
+        d3.select("#industry-select").property('value', 'default');
+    }
 
 
     updateCat() {
@@ -440,7 +463,6 @@ class scatterplot {
             d3.select(".key.projection-key").classed("active", true);
         }
 
-
         this.jobs.attr("fill", d => {
             let val = this.lookup[d.id].projected ? this.lookup[d.id].projected : null;
 
@@ -450,7 +472,6 @@ class scatterplot {
                 return this.percColor(val);
             }
         });
-
 
         this.jobTracks
             .style("stroke", d => {
@@ -464,9 +485,6 @@ class scatterplot {
             });
 
     }
-
-
-
 
 }
 

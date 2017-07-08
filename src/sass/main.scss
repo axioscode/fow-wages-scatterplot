@@ -14,14 +14,24 @@ svg.test {
 	display: none;
 }
 
-.search-container {
-	// position: absolute;
-	// top: 4px;
-	// left: 0;
-	// width: 100%;
-	// z-index: 100;
 
+// .interface-bar {
+// 	position: absolute;
+// 	top: 15px;
+// 	right: 15px;
+// 	background-color: #fff;
+// 	padding: 10px;
+// 	z-index: 100;
+// }
+
+.search-container {
+	display: none;
 	margin-bottom: 15px;
+	height: 34px;
+
+	&.active {
+		display: inherit;
+	}
 }
 
 .container {
@@ -134,7 +144,7 @@ h2 {
 	   pointer-events: none;
 
 	   &.active {
-	   	opacity: .3;
+	   	opacity: .6;
 	   }
 
 	   
@@ -211,6 +221,13 @@ h2 {
 
 }
 
+@media(max-width: 621px) {
+
+    #slider {
+    	width: 60%;
+    }
+    
+}
 
 
 

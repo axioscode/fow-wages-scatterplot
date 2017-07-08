@@ -47,7 +47,10 @@ function main() {
                     sectorKey : industryLookup[d].sectorKey
                 }
 
-                jobsArray.push(obj);
+                if (industryLookup[d].lineArray.length > 0) {
+                	jobsArray.push(obj);
+                }
+                
             });
 
             let dropdown = new searchBar({
@@ -58,10 +61,12 @@ function main() {
                 context: this.theScatterplot
             });
 
+            d3.select(".search-container").classed("active", true);
+
             //DRAW CIRCLES TO SCALE FOR AI KEY
             //console.log(this.theScatterplot.circleScale.domain());
 
-            let thisVals = [100, 1000, 5000, 10000];
+            let thisVals = [1000, 5000, 10000];
 
             d3.select("svg.test").selectAll(".kc")
             	.data(thisVals).enter().append("circle")

@@ -44,7 +44,7 @@
 
 }
 
-#state-select {
+#industry-select {
     padding:3px;
     margin: 0;
     border-radius:3px;
@@ -52,7 +52,6 @@
     color:#4a4a4a;
     border:1px solid #ccc;
     outline:none;
-    display: inline-block;
     appearance:none;
     cursor:pointer;
     padding: 8px 18px 8px 8px;
@@ -60,6 +59,10 @@
     font-weight: 500;
     width: 240px;
     font-size: 14px;
+    display: inline-block;
+
+    
+
 }
 
 button.clear {

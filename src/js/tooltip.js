@@ -55,7 +55,7 @@ let init = function(ttDiv) {
 
     let position = function(data, coords, size) {
 
-
+    	console.log(data, coords, size);
 
         let region = getQuad(coords, size)
 
@@ -84,7 +84,6 @@ let init = function(ttDiv) {
 							</div>
 						</div>`
             });
-
 
     }
 
