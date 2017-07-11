@@ -67,33 +67,47 @@ class scatterplot {
         // define width, height and margin
 
         this.isMobile = window.innerWidth <= 375 ? true : false;
-        this.aspectHeight = this.isMobile ? 1.2 : this.aspectHeight;
+        this.aspectHeight = this.isMobile ? 1 : this.aspectHeight;
         this.scaleFactor = this.isMobile ? .5 : 1;
 
         this.margin = {
             top: 0,
             right: 15,
-            bottom: 45,
+            bottom: 40,
             left: 45
         };
 
         this.width = this.element.offsetWidth - this.margin.left - this.margin.right;
         this.height = (this.element.offsetWidth * this.aspectHeight) - this.margin.top - this.margin.bottom; //Determine desired height here
 
+        d3.select(".container").classed("mobile", this.isMobile);
+
     }
 
 
     _setScales() {
 
-        // this.percColor = d3.scaleLinear()
-        //     // .domain([-0.4557863, 0, 0.6024402])
-        //     .domain([-.5, 0, .5])
-        //     .range(['#ff7921', '#008dc8', '#01356e'])
+        this.percColor = d3.scaleLinear()
+            // .domain([-0.4557863, 0, 0.6024402])
+            .domain([-.2, 0, .2])
+            .range(['#ff7921', '#CCC', '#551bb7'])
 
-        this.percColor = d3.scaleThreshold()
-            .domain([0])
-            .range(['#ff6602', '#551bb7'])
+        // this.percColor = d3.scaleThreshold()
+        //     .domain([0])
+        //     .range(['#ff6602', '#551bb7'])
 
+        this.threshold = d3.scaleThreshold()
+            .domain([-.2, -.1, 0, .1, .2])
+            .range(["#b1290a", "#e74e29", "#fb937a", "#d1cdff", "#9686f7", "#3d0e87"]);
+
+        this.pKeyScale = d3.scaleLinear()
+            .domain([-.3, .3])
+            .range([0, 240]);
+
+        this.pKeyAxis = d3.axisBottom(this.pKeyScale)
+            .tickSize(13)
+            .tickValues(this.threshold.domain())
+            .tickFormat(this.pctFormat);
 
         let wageColors = {
             "high": "#027bb9",
@@ -141,7 +155,7 @@ class scatterplot {
             })
         ]);
 
-        //this.yScale.domain([-.1, .1])
+        this.yScale.domain([-.14, .14])
 
         this.xScale.domain([
             d3.min(this.series, function(c) {
@@ -189,6 +203,48 @@ class scatterplot {
         this._setScales();
         this.draw();
     }
+
+
+    projectionKey() {
+
+        let _this = this;
+
+        
+
+        this.pKeyDiv = d3.select(".projection-key")
+            .style("left", `${(this.width/2) - 120}px`)
+            .style("right", `${(this.width/2) - 120}px`)
+
+        this.pKeyDiv.select("svg").html("");
+
+        this.pKey = this.pKeyDiv.select("svg").append("g")
+            .call(_this.pKeyAxis)
+
+        this.pKey.selectAll("rect")
+            .data(this.threshold.range().map(color => {
+                var d = this.threshold.invertExtent(color);
+                if (d[0] == null) d[0] = this.pKeyScale.domain()[0];
+                if (d[1] == null) d[1] = this.pKeyScale.domain()[1];
+                return d;
+            }))
+            .enter().insert("rect", ".tick")
+            .attr("height", 8)
+            .attr("x", d => {
+                return this.pKeyScale(d[0]);
+            })
+            .attr("width", d => {
+                let a = this.pKeyScale(d[1]);
+                let b = this.pKeyScale(d[0]);
+                return Math.abs(a - b);
+            })
+            .attr("fill", d => {
+                return this.threshold(d[0]);
+            });
+
+
+    }
+
+
 
     draw() {
 
@@ -257,13 +313,10 @@ class scatterplot {
             .attr("text-anchor", "end")
             .text("Shrinking ↓");
 
-        this.keyDiv = d3.selectAll(".circle-key")
-            .style("right", `${this.margin.right + 30}px`)
-            .style("bottom", `25%`)
+        // this.keyDiv = d3.selectAll(".circle-key")
+        //     .style("right", `${this.margin.right + 24}px`)
+        //     .style("bottom", `15%`)
 
-        d3.select(".circle-key.desktop").classed("active", !this.isMobile);
-        d3.select(".circle-key.mobile").classed("active", this.isMobile);
-   
         this.dots = this.plot.append("g")
             .attr("class", "dots-g");
 
@@ -276,11 +329,12 @@ class scatterplot {
             })
             .enter()
             .append("path")
-            .each(d=> {
+            .each(d => {
                 d.sector = this.lookup[d.id].sector;
+                d.cat = this.lookup[d.id].projected >= 0 ? "pos" : "neg";
             })
-            .attr("class", d => {
-                return `${this.lookup[d.id].wageCat} track`;
+            .attr("class", d=> {
+                return `${d.cat} track`;
             })
             .style("stroke-width", 2)
             .style("fill", "none");
@@ -293,14 +347,10 @@ class scatterplot {
             })
             .style("stroke", d => {
                 let val = this.lookup[d.id].projected ? this.lookup[d.id].projected : null;
-
-                if (this.currCat === "wages") {
-                    return this.colorByWage(d);
-                } else if (this.currCat === "projections") {
-                    return this.percColor(val);
-                }
+                return this.threshold(val);
             });
 
+        this.projectionKey();
         this.updateDots();
 
     }
@@ -326,13 +376,14 @@ class scatterplot {
         this.jobs = this.dots.selectAll(`.dot`)
             .data(this.series[this.index], d => {
                 d.sector = this.lookup[d.id].sector;
+                d.cat = this.lookup[d.id].projected >= 0 ? "pos" : "neg";
                 return d.id;
             });
 
         this.jobs.enter()
             .append("circle")
             .attr("class", d => {
-                return `${this.lookup[d.id].wageCat} dot`;
+                return `${d.cat} dot`;
             })
             .attr("cx", d => {
                 return this.xScale(d.wage);
@@ -345,15 +396,9 @@ class scatterplot {
             })
             .attr("fill", d => {
                 let val = this.lookup[d.id].projected ? this.lookup[d.id].projected : null;
-
-                if (this.currCat === "wages") {
-                    return this.colorByWage(d);
-                } else if (this.currCat === "projections") {
-                    return this.percColor(val);
-                }
+                return this.threshold(val);
             });
 
-        //this.updateCat();
 
         this.jobs.exit().remove();
 
@@ -369,7 +414,7 @@ class scatterplot {
                 return d.yPos;
             })
             .attr("r", d => {
-                return this.circleScale(d.emp / Math.PI)  * this.scaleFactor;
+                return this.circleScale(d.emp / Math.PI) * this.scaleFactor;
             });
 
         this.jobs.on("mouseover", function(d) {
@@ -396,49 +441,75 @@ class scatterplot {
                     _this.setTooltip.deposition();
                     d3.select(this).lower();
                 }
-                
+
             })
 
         this.jobs.on("click", function(d) {
             let sel = d3.select(this);
-            _this.setHighlight(sel, d.id, true);
+
+            let ttParams = {
+                sel: sel,
+                id: d.id,
+                type: "id",
+                persist: _this.isMobile
+            }
+
+            _this.setHighlight(ttParams);
+
+            _this.currCat = "all";
+
+            _this.updateCat();
+
         });
 
 
-        this.tt.on("click", d=> {
-            this.clearHighlight();
+        this.tt.on("click", d => {
+            // this.clearHighlight();
+            this.ttLive = false;
+            this.setTooltip.deposition();
         });
 
     }
 
 
-    setHighlight(sel, id, persist) {
-        this.tt.classed("persistent", persist);
+    setHighlight(params) {
+        this.tt.classed("persistent", params.persist);
 
         this.jobs.classed("inactive", true).classed("active", false);
-        sel.classed("inactive", false).classed("active", true);
+        params.sel.classed("inactive", false).classed("active", true);
         this.jobTracks.classed("active", false);
+
         let activeTrack = this.jobTracks.filter(t => {
-                return t.id === id;
+                if (params.type === "id") {
+                    return t.id === params.id;
+                } else {
+                    return t.sector === params.id;
+                }
+
             })
             .classed("active", true);
 
         d3.select("button.clear").classed("active", true);
-        d3.select("#industry-select").property('value', id);
+        d3.select("#industry-select").property('value', params.id);
 
-        if (persist) {
+        //console.log(params.id);
 
-            let datum = sel.datum();
-            datum.lookup = this.lookup[id];
+        if (params.persist) {
+
+            let datum = params.sel.datum();
+            datum.lookup = this.lookup[params.id];
             this.setTooltip.position(
                 datum, [datum.xPos + this.margin.left, datum.yPos + this.margin.top], [this.width, this.height]
             );
 
             this.ttLive = true;
+
         } else {
             this.ttLive = false;
         }
 
+        this.currCat = "all";
+        //this.updateCat();
 
     }
 
@@ -450,41 +521,44 @@ class scatterplot {
         this.jobTracks.classed("active", false);
         d3.select("button.clear").classed("active", false);
         d3.select("#industry-select").property('value', 'default');
+
+        //this.currCat = "all";
+        this.updateCat();
+
     }
 
 
-    updateCat() {
 
-        d3.selectAll(".key").classed("active", false);
 
-        if (this.currCat === "wages") {
-            d3.select(".key.wage-key").classed("active", true);
-        } else if (this.currCat === "projections") {
-            d3.select(".key.projection-key").classed("active", true);
-        }
+    updateCat(origin) {
 
-        this.jobs.attr("fill", d => {
-            let val = this.lookup[d.id].projected ? this.lookup[d.id].projected : null;
+        let cats = ["all", "pos", "neg"];
 
-            if (this.currCat === "wages") {
-                return this.colorByWage(d);
-            } else if (this.currCat === "projections") {
-                return this.percColor(val);
-            }
+        cats.forEach(cat=> {
+            d3.select(this.element).classed(cat, false);
         });
 
-        this.jobTracks
-            .style("stroke", d => {
-                let val = this.lookup[d.id].projected ? this.lookup[d.id].projected : null;
+        d3.select(this.element).classed(this.currCat, true);
 
-                if (this.currCat === "wages") {
-                    return this.colorByWage(d);
-                } else if (this.currCat === "projections") {
-                    return this.percColor(val);
-                }
-            });
+        let sel = this.jobs.filter(d=> {
+            return d.cat === this.currCat;
+        });
+
+        sel.raise();
+
+        d3.selectAll(".cat-nav button").classed("active", false);
+        d3.select(`button[val='${this.currCat}']`).classed("active", true);
+
+        if (origin && origin === "button") {
+            this.clearHighlight();
+        }
 
     }
+
+
+
+
+
 
 }
 

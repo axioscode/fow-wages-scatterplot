@@ -2,68 +2,62 @@
 @import 'feta';
 
 
-// .key-div {
-// 	position: absolute;
-// 	text-align: right;
+.key {
 
-	// div, img {
-	// 	outline: 1px solid green;
-	// }
+	// position: absolute;
+	// top: 10px;
+	// z-index: 3;
+	// //background-color: rgba(255, 255, 255, .9);
+	// padding-top: 4px;
 
-	// .circle-key {
-	// 	//position: absolute;
-	// 	width: 180px;
-	// }
-
-
-	.key {
-
+	p {
 		font-family: $mono;
 		color: $color-gray-600;
 		font-size: 12px;
-		display: none;
-
-		&.active {
-			display: block;
-		}
-
-		.key-item {
-			display: inline-block;
-			padding: 4px 6px;
-			background-color: #fff;
-
-			.swatch {
-				display: inline-block;
-				background-color: #333;
-				border-radius: 100%;
-				width: 12px;
-				height: 12px;
-				margin-right: 4px;
-			}
-
-			&.high .swatch {
-				background-color: #027bb9;
-			}
-
-			&.middle .swatch {
-				background-color: #846f55;
-			}
-
-			&.low .swatch {
-				background-color: #e15300;
-			}
-
-			&.grow .swatch {
-				background-color: #551bb7;
-			}
-
-			&.shrink .swatch {
-				background-color: #ff6602;
-			}
-
-		}
+		margin-bottom: 4px;
+		background-color: #fff;
+	}
+	
+	svg {
+		width: 241px;
+		height: 30px;
 	}
 
+	path {
+		display: none;
+	}
 
-// }
+	.tick line {
+		display: none;
+	}
+	
+	text {
+		font-family: $mono;
+		fill: $color-gray-600;
+		paint-order: stroke;
+		stroke: white;
+		stroke-width: 4px;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
 
+}
+
+
+.circle-key {
+	// position: absolute;
+	// display: none;
+
+	&.active {
+		display: block;
+	}
+
+	&.desktop {
+		width: 180px;
+	}
+
+	&.mobile {
+		width: 150px;
+	}	
+
+}

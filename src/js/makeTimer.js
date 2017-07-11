@@ -15,9 +15,6 @@ class makeTimer {
         }
 
         this.interval = setInterval(d=> {
-
-            console.log("setInterval");
-
             this.totalSeconds += 1;
             this.onUpdate();
 

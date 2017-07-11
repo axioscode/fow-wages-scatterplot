@@ -28,6 +28,10 @@ function numberWithCommas(val) {
     return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function round(value, decimals) {
+  return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+}
+
 function toTitleCase(str) {
     return str.replace(/\w\S*/g, function(txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
@@ -35,6 +39,8 @@ function toTitleCase(str) {
 }
 
 let pctFormat = d3.format(".1%");
+let parseTime = d3.timeParse("%Y%m");
+let formatDate = d3.timeFormat("%b %y");
 
 let init = function(ttDiv) {
 
@@ -55,8 +61,6 @@ let init = function(ttDiv) {
 
     let position = function(data, coords, size) {
 
-    	console.log(data, coords, size);
-
         let region = getQuad(coords, size)
 
         theTooltip
@@ -68,22 +72,30 @@ let init = function(ttDiv) {
 
                 let projStr = data.lookup.projected >= 0 ? `+${pctFormat(data.lookup.projected)}` : pctFormat(data.lookup.projected);
 
+                let wage = `$${data.wage}/hr`; 
+                let emp = `${round(data.emp/1000, 1)}k`; 
+                let month = formatDate(parseTime(data.m));
+
                 return `<div class="tooltip-inner">
 							<div class="close-button">×</div>
 							<h4 class="tt-header">${data.lookup.industry_name}</h4>
-							<div class="tt-row with-rule subhead">
-								<strong>Avg. monthly emp.</strong>
-							</div>
+							<div class="tt-row with-rule subhead">${data.sector}</div>
 							<div class="tt-row with-rule">
 								<strong>Proj. 2014-24:</strong>
 								<span>${projStr}</span>
 							</div>
-							<div class="tt-row">
-								<strong>Wage category:</strong>
-								<span>${toTitleCase(data.lookup.wageCat)}</span>
-							</div>
+                            <div class="tt-row">
+                                <strong>Employed ${month}:</strong>
+                                <span>${emp}</span>
+                            </div>
+                            <div class="tt-row">
+                                <strong>Avg wage:</strong>
+                                <span>${wage}</span>
+                            </div>
 						</div>`
             });
+
+
 
     }
 

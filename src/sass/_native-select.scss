@@ -87,5 +87,17 @@ button.clear {
 
 
 
+@media(max-width: 375px) {
+
+    // .native-select-wrapper {
+    //     top: 0;
+    // }
+
+    #industry-select {
+        font-size: 12px;
+        height: 33px;
+    }
+    
+}
 
 

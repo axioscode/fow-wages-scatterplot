@@ -24,62 +24,67 @@ function main() {
         constructor(opts) {
             this.init();
             this._setNav();
+            //this._setIntro();
             this.curr = 0;
             this.index = 0;
         }
 
         init() {
 
+            //Initiate the scatterplot.
             this.theScatterplot = new scatterplot({
                 element: document.querySelector(`.scatterplot.chart`),
                 data: monthsData,
                 lookup: industryLookup,
-                currCat: "wages"
+                currCat: "all",
+                aspectHeight : .6
             });
+            // ***** //
 
-            let jobsArray = [];
+            //Create array of industries for dropdown.
+            let industriesArray = [];
 
             Object.keys(industryLookup).forEach(d => {
                 let obj = {
                     id: d,
                     val: industryLookup[d].industry_name,
-                    sector : industryLookup[d].sector,
-                    sectorKey : industryLookup[d].sectorKey
+                    sector: industryLookup[d].sector,
+                    sectorKey: industryLookup[d].sectorKey
                 }
 
                 if (industryLookup[d].lineArray.length > 0) {
-                	jobsArray.push(obj);
+                    industriesArray.push(obj);
                 }
-                
+
             });
 
             let dropdown = new searchBar({
-                vizData: jobsArray,
+                vizData: industriesArray,
                 selector: ".header-search",
                 placeholder: "All industries",
-                noResultsText: "No match found",
                 context: this.theScatterplot
             });
 
             d3.select(".search-container").classed("active", true);
+            // ***** //
 
             //DRAW CIRCLES TO SCALE FOR AI KEY
             //console.log(this.theScatterplot.circleScale.domain());
 
-            let thisVals = [1000, 5000, 10000];
+            // let thisVals = [1000, 5000, 10000];
 
-            d3.select("svg.test").selectAll(".kc")
-            	.data(thisVals).enter().append("circle")
-            	.classed("kc", true)
-            	.attr("cx", 100)
-            	.attr("cy", 100)
-            	.attr("r", d => {
-                    return this.theScatterplot.circleScale(d / Math.PI) * this.theScatterplot.scaleFactor;
-                })
-                .style("stroke", "#ccc")
-                .style("stroke-width", 1)
-                .style("fill", "none");
-
+            // d3.select("svg.test").selectAll(".kc")
+            // 	.data(thisVals).enter().append("circle")
+            // 	.classed("kc", true)
+            // 	.attr("cx", 100)
+            // 	.attr("cy", 100)
+            // 	.attr("r", d => {
+            //         return this.theScatterplot.circleScale(d / Math.PI) * this.theScatterplot.scaleFactor;
+            //     })
+            //     .style("stroke", "#ccc")
+            //     .style("stroke-width", 1)
+            //     .style("fill", "none");
+            // ***** //
 
 
         }
@@ -90,7 +95,7 @@ function main() {
             this.sliderDiv = d3.select('.interface-bar');
             this.sliderDiv.classed('is-playing', true);
 
-            let months = this.theScatterplot.months;
+            let months = this.theScatterplot.months; //Pull months array from scatterplot
 
             this.slider = d3.select('#slider').attr("max", months.length - 2).attr("value", 0);
 
@@ -99,7 +104,7 @@ function main() {
                 onUpdate: function() {
                     _this.index++;
 
-                    if (_this.index >= (months.length - 2)) {
+                    if (_this.index >= (months.length - 2)) { // - 2 bc wages lag by 1 month.
                         pauseTimer();
                     }
 
@@ -126,12 +131,6 @@ function main() {
             function pauseTimer() {
                 _this.sliderDiv.classed('is-playing', false);
                 _this.timer.pause();
-
-                // if (_this.index >= (months.length - 2)) {
-                // 	_this.timer.pause();
-                // }
-
-
             }
 
             this.slider.on('click change input', function() {
@@ -143,28 +142,66 @@ function main() {
             this.parseTime = d3.timeParse("%Y%m");
             this.formatDate = d3.timeFormat("%b %Y");
 
-            let cats = ["wages", "projections"];
-
             this.buttons = d3.selectAll(".cat-nav button").on("click", function() {
-                let val = d3.select(this).attr("val");
-
-                _this.theScatterplot.currCat = val;
-                _this.theScatterplot.updateCat();
-
-                _this.buttons.classed("active", false);
-                d3.select(this).classed("active", true);
-
-                cats.forEach(c => {
-                    d3.select(".scatterplot.chart").classed(c, false);
-                })
-
-                d3.select(".scatterplot.chart").classed(val, true);
-
+                _this.theScatterplot.currCat = d3.select(this).attr("val");
+                _this.theScatterplot.updateCat("button");
             });
 
             this.timer.start();
 
+            d3.select("button.clear").on("click", d => {
+                d3.select("#industry-select").property('value', 'default');
+                this.theScatterplot.ttLive = false;
+                this.theScatterplot.clearHighlight();
+            });
+
         }
+
+
+        _setIntro() {
+
+            let _this = this;
+            let cycle = ["Accommodation and Food Services", "Construction", "Manufacturing", "Finance and Insurance"];
+
+            let introIndex = 0;
+            this.introTimer = new makeTimer({
+                speed: 5000,
+                onUpdate: function() {
+
+                    introIndex++;
+
+                    if (introIndex >= cycle.length - 1) {
+                        introIndex = 0;
+                    }
+
+                    updateIntro();
+
+                }
+            });
+
+            updateIntro();
+
+            function updateIntro() {
+
+                let val = cycle[introIndex];
+                let sel = _this.theScatterplot.plot.selectAll(".dot").filter(d => {
+                    return d.sector === val;
+                });
+
+                let ttParams = {
+                    sel: sel,
+                    id: val,
+                    type: "desc",
+                    persist: false
+                }
+
+                _this.theScatterplot.setHighlight(ttParams);
+            }
+
+            this.introTimer.start();
+
+        }
+
 
 
 

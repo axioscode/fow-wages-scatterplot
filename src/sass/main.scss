@@ -6,14 +6,13 @@
 @import '_key';
 @import '_native-select';
 
-// div {
+// div, g {
 // 	outline: 1px solid tomato;
 // }
 
 svg.test {
 	display: none;
 }
-
 
 // .interface-bar {
 // 	position: absolute;
@@ -24,15 +23,25 @@ svg.test {
 // 	z-index: 100;
 // }
 
+$active-opacity : .8;
+$inactive-opacity: .1;
+
 .search-container {
 	display: none;
-	margin-bottom: 15px;
+	margin-bottom: 8px;
 	height: 34px;
 
 	&.active {
 		display: inherit;
 	}
 }
+
+// .search-container {
+// 	position: absolute;
+// 	top: 15px;
+// 	left: 60px;
+// 	z-index: 3;
+// }
 
 .container {
 	margin: 0 auto;
@@ -47,23 +56,7 @@ svg.test {
     margin: 0 auto;
 }
 
-.circle-key {
-	position: absolute;
-	display: none;
 
-	&.active {
-		display: block;
-	}
-
-	&.desktop {
-		width: 180px;
-	}
-
-	&.mobile {
-		width: 150px;
-	}	
-
-}
 
 
 .chart-hed {
@@ -87,12 +80,14 @@ h2 {
 	width: 100%;
 	display: inline-block;
 	position: relative;
+	text-align: center;
 }
 
 
 .chart {
 	width: 100%;
 	position: relative;
+	text-align: center;
 
 	.tt {
 		position: absolute;
@@ -109,16 +104,17 @@ h2 {
 	}
 
 	.dot {
-		stroke: #FFF;
-		stroke-width: 1;
-		fill-opacity: .8;
+		stroke: #333;
+		stroke-width: .5;
+		fill-opacity: $active-opacity;
+		stroke-opacity: $active-opacity;
 		transition: opacity .1s ease-in-out;
 	    -moz-transition: opacity .1s ease-in-out;
 	    -webkit-transition: opacity .1s ease-in-out;
 
 		&.inactive {
-			fill-opacity: .1;
-			stroke-opacity: .1;
+			fill-opacity: $inactive-opacity;
+			stroke-opacity: $inactive-opacity;
 
 			&:hover {
 				stroke-opacity: 1;
@@ -144,27 +140,42 @@ h2 {
 	   pointer-events: none;
 
 	   &.active {
-	   	opacity: .6;
+	   	opacity: 1;
 	   }
 
 	   
 	}
 
-	&.wages {
+	&.pos {
 		
-		// .dot {
-		// 	&.low {
-		// 		fill: $color-orange-500;
-		// 	}
+		.dot {
 
-		// 	&.middle {
-		// 		fill: $color-purple-500;
-		// 	}
+			fill-opacity: $inactive-opacity;
+			stroke-opacity: $inactive-opacity;
+			
 
-		// 	&.high {
-		// 		fill: $color-axios-blue-700;
-		// 	}
-		// }
+			&.pos {
+				fill-opacity: $active-opacity;
+				stroke-opacity: $active-opacity;
+			}
+
+		}
+
+	}
+
+	&.neg {
+		
+		.dot {
+
+			fill-opacity: $inactive-opacity;
+			stroke-opacity: $inactive-opacity;
+
+			&.neg {
+				fill-opacity: $active-opacity;
+				stroke-opacity: $active-opacity;
+			}
+			
+		}
 
 	}
 
@@ -211,6 +222,13 @@ h2 {
 		fill: $color-gray-700 !important;
 		font-size: 12px;
 		letter-spacing: .5px;
+
+		paint-order: stroke;
+		stroke: white;
+		stroke-width: 4px;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+
 	}
 
 	.recession {
@@ -221,12 +239,45 @@ h2 {
 
 }
 
+
+
+
+.container {
+
+	.circle-key {
+		display: none;
+
+		&.desktop {
+			display: inline-block;
+		}
+	}
+
+	&.mobile {
+		.circle-key.mobile {
+			display: inline-block;
+		}
+
+		.circle-key.desktop {
+			display: none;
+		}
+	}
+
+}
+
+
+
+
+
 @media(max-width: 621px) {
 
     #slider {
     	width: 60%;
     }
-    
+
+    .dot.inactive {
+		pointer-events: none;
+	}
+
 }
 
 

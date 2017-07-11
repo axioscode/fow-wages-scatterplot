@@ -64,6 +64,7 @@
 
 	&.persistent {
 		pointer-events: auto !important;
+		//width: 90%;
 		.close-button {
 			display: inherit;
 		}
@@ -200,6 +201,8 @@
 
 	.tt-row {
 
+		line-height: 1.5;
+
 		&.with-rule {
 			margin-bottom: 5px;
 			padding-bottom: 5px;
@@ -212,10 +215,11 @@
 		}
 
 		&.subhead {
-			padding-top: 8px;
-			strong {
-				color: #4a4a4a;
-			}
+			padding-top: 2px;
+			font-size: 9px;
+			font-family: $sans;
+			text-transform: uppercase;
+			color: $color-gray-400;
 		}
 
 		&:after {
