@@ -47,7 +47,9 @@ function searchBar(vizConfig) {
         .append("select")
         .attr("id", "industry-select")
         .html(d=> {
-            return `<option value="default">${vizConfig.placeholder}</option>`;
+            return `<option value="default">${vizConfig.placeholder}</option>
+                    <option value="pos">Projected to grow</option>
+                    <option value="neg">Projected to shrink</option>`
         })
         // .attr("data-placeholder", placeholder)
         //.classed("chosen-select", true)
@@ -80,8 +82,16 @@ function searchBar(vizConfig) {
             }
 
             if (!val) {
+                vizConfig.context.currCat = "all";
                 vizConfig.context.clearHighlight();
+                vizConfig.context.updateCat("button");
+            } else if (val === "pos" || val === "neg") {
+                vizConfig.context.currCat = val;
+                vizConfig.context.updateCat("button");
+                d3.select("button.clear").classed("active", true);
             } else {
+                vizConfig.context.currCat = "all";
+                vizConfig.context.updateCat("button");
                 vizConfig.context.setHighlight(ttParams);
             }
 
@@ -89,9 +99,10 @@ function searchBar(vizConfig) {
 
     d3.select("button.clear").on("click", d => {
         d3.select("#state-select").property('value', 'default');
-        vizConfig.context.clearHighlight(null, null);
+        vizConfig.context.clearHighlight(null, null);        
+        vizConfig.context.currCat = "all";
+        vizConfig.context.updateCat("button");
     });
-
 
     function sortArray(a,b) {
         a = a.toUpperCase(); // ignore upper and lowercase

@@ -167,7 +167,7 @@ class scatterplot {
                 return d3.max(c, function(d) {
                     return d.wage;
                 });
-            })
+            }) + 2
         ]);
 
         this.yAxis = d3.axisLeft(this.yScale)
@@ -301,14 +301,14 @@ class scatterplot {
 
         this.plot.append("text")
             .attr("class", "range-label")
-            .attr("y", this.yScale(.01))
+            .attr("y", this.yScale(.012))
             .attr("x", this.width)
             .attr("text-anchor", "end")
             .text("Growing ↑");
 
         this.plot.append("text")
             .attr("class", "range-label")
-            .attr("y", this.yScale(-.02))
+            .attr("y", this.yScale(-.018))
             .attr("x", this.width)
             .attr("text-anchor", "end")
             .text("Shrinking ↓");
@@ -323,31 +323,66 @@ class scatterplot {
         this.tracks = this.plot.append("g")
             .attr("class", "tracks-g");
 
-        this.jobTracks = this.tracks.selectAll(`.track`)
-            .data(this.series[this.index], d => {
-                return d.id;
+        let trackData = this.industries.filter(d=> {
+            return this.lookup[d].lineArray.length > 0;
+        })
+
+        this.jobTracks = this.tracks.selectAll("g.track-group")
+            .data(trackData, d=> {
+                return d;
             })
             .enter()
-            .append("path")
-            .each(d => {
-                d.sector = this.lookup[d.id].sector;
-                d.cat = this.lookup[d.id].projected >= 0 ? "pos" : "neg";
-            })
+            .append("g")
+            .classed("track-group", true);
+
+        this.jobTracks.append("path")
             .attr("class", d=> {
-                return `${d.cat} track`;
+                let cat = this.lookup[d].projected >= 0 ? "pos" : "neg";
+                return `${cat} track`;
             })
             .style("stroke-width", 2)
-            .style("fill", "none");
-
-        this.jobTracks
+            .style("fill", "none")
             .attr("d", d => {
-                let arr = this.lookup[d.id].lineArray;
+                let arr = this.lookup[d].lineArray;
                 let pts = [arr[0], arr[arr.length - 1]];
                 return this.line(arr);
             })
             .style("stroke", d => {
-                let val = this.lookup[d.id].projected ? this.lookup[d.id].projected : null;
+                let val = this.lookup[d].projected ? this.lookup[d].projected : null;
                 return this.threshold(val);
+            });
+
+        this.trackStart = this.jobTracks.append("text")
+            .classed("track-start", true)
+            .datum(d=> {
+                let arr = this.lookup[d].lineArray;
+                return arr[0];
+            })
+            .attr("text-anchor", "end")
+            .attr("x", d => {
+                return this.xScale(d.wage) - 2;
+            })
+            .attr("y", d => {
+                return this.yScale(d.annualized);
+            })
+            .text(d=> {
+                return d.m.substring(0,4);
+            });
+
+        this.trackEnd = this.jobTracks.append("text")
+            .classed("track-end", true)
+            .datum(d=> {
+                let arr = this.lookup[d].lineArray;
+                return arr[arr.length-1];
+            })
+            .attr("x", d => {
+                return this.xScale(d.wage) + 2;
+            })
+            .attr("y", d => {
+                return this.yScale(d.annualized);
+            })
+            .text(d=> {
+                return d.m.substring(0,4);
             });
 
         this.projectionKey();
@@ -398,7 +433,6 @@ class scatterplot {
                 let val = this.lookup[d.id].projected ? this.lookup[d.id].projected : null;
                 return this.threshold(val);
             });
-
 
         this.jobs.exit().remove();
 
@@ -457,8 +491,10 @@ class scatterplot {
             _this.setHighlight(ttParams);
 
             _this.currCat = "all";
-
             _this.updateCat();
+
+
+            d3.select("#industry-select").property('value', sel.datum().sector);
 
         });
 
@@ -480,10 +516,9 @@ class scatterplot {
         this.jobTracks.classed("active", false);
 
         let activeTrack = this.jobTracks.filter(t => {
+
                 if (params.type === "id") {
-                    return t.id === params.id;
-                } else {
-                    return t.sector === params.id;
+                    return t === params.id;
                 }
 
             })
@@ -549,9 +584,9 @@ class scatterplot {
         d3.selectAll(".cat-nav button").classed("active", false);
         d3.select(`button[val='${this.currCat}']`).classed("active", true);
 
-        if (origin && origin === "button") {
-            this.clearHighlight();
-        }
+        // if (origin && origin === "button") {
+        //     this.clearHighlight();
+        // }
 
     }
 

@@ -83,12 +83,14 @@ function searchBar(vizConfig) {
                 persist : false
             }
 
-
             if (val==="default") {
                 vizConfig.context.clearHighlight();
             } else {
                 vizConfig.context.setHighlight(ttParams);
             }
+
+            vizConfig.context.currCat = "all";
+            vizConfig.context.updateCat();
             
         });
 

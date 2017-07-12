@@ -24,7 +24,7 @@ svg.test {
 // }
 
 $active-opacity : .8;
-$inactive-opacity: .1;
+$inactive-opacity: .05;
 
 .search-container {
 	display: none;
@@ -45,7 +45,7 @@ $inactive-opacity: .1;
 
 .container {
 	margin: 0 auto;
-	//max-width: 700px;
+	padding-bottom: 15px;
 	width: 100%;
 	text-align: center;
 	position: relative;
@@ -105,7 +105,7 @@ h2 {
 
 	.dot {
 		stroke: #333;
-		stroke-width: .5;
+		stroke-width: 1;
 		fill-opacity: $active-opacity;
 		stroke-opacity: $active-opacity;
 		transition: opacity .1s ease-in-out;
@@ -115,6 +115,7 @@ h2 {
 		&.inactive {
 			fill-opacity: $inactive-opacity;
 			stroke-opacity: $inactive-opacity;
+			pointer-events: none;
 
 			&:hover {
 				stroke-opacity: 1;
@@ -132,19 +133,36 @@ h2 {
 
 	}
 
-	.track {
-		transition: opacity .1s ease-in-out;
-	   -moz-transition: opacity .1s ease-in-out;
-	   -webkit-transition: opacity .1s ease-in-out;
-	   opacity: 0;
-	   pointer-events: none;
+	.track-group {
+		text {
+			font-family: $mono;
+			font-size: 10px;
+			opacity: 0;
+			pointer-events: none;
+			paint-order: stroke;
+			stroke: white;
+			stroke-width: 4px;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+		}
 
-	   &.active {
-	   	opacity: 1;
-	   }
+		.track {
+			transition: opacity .1s ease-in-out;
+		   -moz-transition: opacity .1s ease-in-out;
+		   -webkit-transition: opacity .1s ease-in-out;
+		   opacity: 0;
+		   pointer-events: none;	   
+		}
 
-	   
-	}
+		&.active .track {
+	   		opacity: .7;
+	   	}
+
+	   	&.active text {
+	   		opacity: .7;
+	   	}
+
+   	}
 
 	&.pos {
 		

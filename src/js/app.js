@@ -10,7 +10,7 @@ import lineChart from "./lineChart";
 import scatterplot from "./scatterplot";
 // import indeedData from '../data/output.json';
 import makeTimer from "./makeTimer";
-import searchBar from "./dropdown";
+import searchBar from "./sectorsDropdown";
 import industryLookup from '../data/industryLookup.json';
 import monthsData from '../data/monthsData.json';
 
@@ -149,11 +149,11 @@ function main() {
 
             this.timer.start();
 
-            d3.select("button.clear").on("click", d => {
-                d3.select("#industry-select").property('value', 'default');
-                this.theScatterplot.ttLive = false;
-                this.theScatterplot.clearHighlight();
-            });
+            // d3.select("button.clear").on("click", d => {
+            //     d3.select("#industry-select").property('value', 'default');
+            //     this.theScatterplot.ttLive = false;
+            //     this.theScatterplot.clearHighlight();
+            // });
 
         }
 
