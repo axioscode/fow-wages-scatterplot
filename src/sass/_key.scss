@@ -2,13 +2,11 @@
 @import 'feta';
 
 
-.key {
+.key-item {
 
-	// position: absolute;
-	// top: 10px;
-	// z-index: 3;
-	// //background-color: rgba(255, 255, 255, .9);
-	// padding-top: 4px;
+	display: inline-block;
+	vertical-align: middle;
+	margin: 15px 8px;
 
 	p {
 		font-family: $mono;
@@ -17,6 +15,16 @@
 		margin-bottom: 4px;
 		background-color: #fff;
 	}
+}
+
+.key {
+
+	// position: absolute;
+	// top: 10px;
+	// z-index: 3;
+	// //background-color: rgba(255, 255, 255, .9);
+	// padding-top: 4px;
+
 	
 	svg {
 		width: 241px;

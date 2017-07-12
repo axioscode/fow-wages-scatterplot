@@ -6,22 +6,23 @@
 @import '_key';
 @import '_native-select';
 
-// div, g {
+// div {
 // 	outline: 1px solid tomato;
 // }
+
+
 
 svg.test {
 	display: none;
 }
 
-// .interface-bar {
-// 	position: absolute;
-// 	top: 15px;
-// 	right: 15px;
-// 	background-color: #fff;
-// 	padding: 10px;
-// 	z-index: 100;
-// }
+.interface-bar {
+	float: left;
+}
+
+.search-container {
+	float: right;
+}
 
 $active-opacity : .8;
 $inactive-opacity: .05;
@@ -55,9 +56,6 @@ $inactive-opacity: .05;
     display: inline-block;
     margin: 0 auto;
 }
-
-
-
 
 .chart-hed {
     position: relative;
@@ -111,6 +109,7 @@ h2 {
 		transition: opacity .1s ease-in-out;
 	    -moz-transition: opacity .1s ease-in-out;
 	    -webkit-transition: opacity .1s ease-in-out;
+	    cursor: pointer;
 
 		&.inactive {
 			fill-opacity: $inactive-opacity;
@@ -126,6 +125,7 @@ h2 {
 
 		&.active, &:hover {
 			stroke-opacity: 1;
+			stroke-width: 2;
 			stroke: #333;
 		}
 
@@ -289,7 +289,7 @@ h2 {
 @media(max-width: 621px) {
 
     #slider {
-    	width: 60%;
+    	width: 50%;
     }
 
     .dot.inactive {
@@ -299,7 +299,23 @@ h2 {
 }
 
 
+@media(max-width: 510px) {
+	.interface-bar {
+		display: inline-block;
+		float: none;
+	}
 
+	.search-container {
+		display: inline-block;
+		float: none;
+	}
+
+
+	.key-item {
+		margin: 0px 8px;
+	}
+	
+}
 
 
 

@@ -211,9 +211,9 @@ class scatterplot {
 
         
 
-        this.pKeyDiv = d3.select(".projection-key")
-            .style("left", `${(this.width/2) - 120}px`)
-            .style("right", `${(this.width/2) - 120}px`)
+        this.pKeyDiv = d3.select(".projection-key");
+            // .style("left", `${(this.width/2) - 120}px`)
+            // .style("right", `${(this.width/2) - 120}px`)
 
         this.pKeyDiv.select("svg").html("");
 
