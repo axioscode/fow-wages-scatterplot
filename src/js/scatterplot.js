@@ -9,7 +9,6 @@ class scatterplot {
     constructor(opts) {
         this.element = opts.element;
         this.aspectHeight = opts.aspectHeight ? opts.aspectHeight : .7;
-        this.onReady = opts.onReady ? opts.onReady : null;
         this.data = opts.data ? opts.data : null;
         this.lookup = opts.lookup ? opts.lookup : null;
         this.currCat = opts.currCat;
@@ -595,7 +594,7 @@ class scatterplot {
 
 
     updateCat(origin) {
-
+        
         let cats = ["all", "pos", "neg"];
 
         cats.forEach(cat=> {
