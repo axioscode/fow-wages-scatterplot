@@ -1,5 +1,6 @@
 let d3 = require("d3");
 let setTooltip = require('./tooltip.js');
+let trackEvent = require('./analytics.js').trackEvent;
 
 
 
@@ -18,6 +19,8 @@ class scatterplot {
         this.pctFormat = d3.format(".0%");
 
         this.ttLive = false;
+        this.highlightOn = false;
+
 
         this.index = 0;
 
@@ -209,8 +212,6 @@ class scatterplot {
 
         let _this = this;
 
-        
-
         this.pKeyDiv = d3.select(".projection-key");
             // .style("left", `${(this.width/2) - 120}px`)
             // .style("right", `${(this.width/2) - 120}px`)
@@ -258,6 +259,21 @@ class scatterplot {
         this.setTooltip = setTooltip.init('.has-tooltip')
 
         this.svg = d3.select(this.element).append('svg');
+
+        this.bkgd = this.svg.append("rect")
+            .attr("width", this.width + this.margin.left + this.margin.right)
+            .attr("height", this.height + this.margin.top + this.margin.bottom)
+            .attr("fill", "#fff")
+            .on("click", d=> {
+                if (this.highlightOn) {     
+                    d3.select("#state-select").property('value', 'default');
+                    this.clearHighlight(null, null);        
+                    this.currCat = "all";
+                    this.updateCat("button");
+                }
+
+            })
+
 
         //Set svg dimensions
         this.svg.attr('width', this.width + this.margin.left + this.margin.right);
@@ -481,6 +497,8 @@ class scatterplot {
         this.jobs.on("click", function(d) {
             let sel = d3.select(this);
 
+            // console.log(sel.datum());
+
             let ttParams = {
                 sel: sel,
                 id: d.id,
@@ -494,6 +512,8 @@ class scatterplot {
             _this.updateCat();
 
 
+            trackEvent('circle-click','single');
+
             d3.select("#industry-select").property('value', sel.datum().sector);
 
         });
@@ -503,12 +523,18 @@ class scatterplot {
             // this.clearHighlight();
             this.ttLive = false;
             this.setTooltip.deposition();
+
+            trackEvent('tooltip-close','mobile');
         });
 
     }
 
 
     setHighlight(params) {
+
+
+        this.highlightOn = true;
+
         this.tt.classed("persistent", params.persist);
 
         this.jobs.classed("inactive", true).classed("active", false);
@@ -550,6 +576,9 @@ class scatterplot {
 
 
     clearHighlight() {
+
+        this.highlightOn = false;
+
         this.ttLive = false;
         this.setTooltip.deposition();
         this.jobs.classed("inactive", false).classed("active", false);
@@ -584,9 +613,9 @@ class scatterplot {
         d3.selectAll(".cat-nav button").classed("active", false);
         d3.select(`button[val='${this.currCat}']`).classed("active", true);
 
-        // if (origin && origin === "button") {
-        //     this.clearHighlight();
-        // }
+        if (this.currCat !== "all") {
+            this.highlightOn = true;
+        }
 
     }
 

@@ -10,39 +10,30 @@
 // 	outline: 1px solid tomato;
 // }
 
+.nav-div {
 
+	.interface-bar {
+		display: inline-block;
+		vertical-align: middle;
+		margin: 8px;
+	}
+
+	.search-container {
+		display: inline-block;
+		vertical-align: middle;
+		height: 34px;
+		margin: 8px;
+	}
+
+}
 
 svg.test {
 	display: none;
 }
 
-.interface-bar {
-	float: left;
-}
-
-.search-container {
-	float: right;
-}
 
 $active-opacity : .8;
 $inactive-opacity: .05;
-
-.search-container {
-	display: none;
-	margin-bottom: 8px;
-	height: 34px;
-
-	&.active {
-		display: inherit;
-	}
-}
-
-// .search-container {
-// 	position: absolute;
-// 	top: 15px;
-// 	left: 60px;
-// 	z-index: 3;
-// }
 
 .container {
 	margin: 0 auto;
@@ -111,6 +102,10 @@ h2 {
 	    -webkit-transition: opacity .1s ease-in-out;
 	    cursor: pointer;
 
+	    &:hover {
+	    	stroke-width: 2;
+	    }
+
 		&.inactive {
 			fill-opacity: $inactive-opacity;
 			stroke-opacity: $inactive-opacity;
@@ -125,7 +120,6 @@ h2 {
 
 		&.active, &:hover {
 			stroke-opacity: 1;
-			stroke-width: 2;
 			stroke: #333;
 		}
 
@@ -199,9 +193,12 @@ h2 {
 
 	.axis {
 
+
+
 		text {
 			font-family: $mono;
 			fill: $color-gray-700 !important;
+			pointer-events: none;
 		}
 
 		.tick text {
@@ -211,6 +208,7 @@ h2 {
 		line, path {
 			stroke: #c2c2c2 !important;
 			stroke-width: .5;
+			pointer-events: none;
 		}
 
 		.domain {
@@ -221,11 +219,13 @@ h2 {
 			font-family: $mono;
 			font-size: 13px;
 			fill: #4a4a4a;
+			pointer-events: none;
 		}
 
 		.axis-label {
 			font-size: 12px;
 			letter-spacing: .5px;
+			pointer-events: none;
 		}
 		            
 	}
@@ -233,6 +233,7 @@ h2 {
 	.zero-line {
 		stroke: $color-gray-700 !important;
 		stroke-width: 2;
+		pointer-events: none;
 	}
 
 	.range-label {
@@ -246,6 +247,7 @@ h2 {
 		stroke-width: 4px;
 		stroke-linecap: round;
 		stroke-linejoin: round;
+		pointer-events: none;
 
 	}
 
@@ -300,6 +302,7 @@ h2 {
 
 
 @media(max-width: 510px) {
+
 	.interface-bar {
 		display: inline-block;
 		float: none;
@@ -309,7 +312,6 @@ h2 {
 		display: inline-block;
 		float: none;
 	}
-
 
 	.key-item {
 		margin: 0px 8px;

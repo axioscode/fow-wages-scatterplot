@@ -73,7 +73,8 @@ let init = function(ttDiv) {
                 let projStr = data.lookup.projected >= 0 ? `+${pctFormat(data.lookup.projected)}` : pctFormat(data.lookup.projected);
 
                 let wage = `$${data.wage}/hr`; 
-                let emp = `${round(data.emp/1000, 1)}k`; 
+                let emp =  data.emp < 1000 ? `${round(data.emp, 2)}k` : `${round(data.emp/1000, 2)}m`; 
+
                 let month = formatDate(parseTime(data.m));
 
                 return `<div class="tooltip-inner">
@@ -81,15 +82,15 @@ let init = function(ttDiv) {
 							<h4 class="tt-header">${data.lookup.industry_name}</h4>
 							<div class="tt-row with-rule subhead">${data.sector}</div>
 							<div class="tt-row with-rule">
-								<strong>Proj. 2014-24:</strong>
+								<strong>Proj. 2014-24</strong>
 								<span>${projStr}</span>
 							</div>
-                            <div class="tt-row">
-                                <strong>Employed ${month}:</strong>
+                            <div class="tt-row with-rule">
+                                <strong>Employed ${month}</strong>
                                 <span>${emp}</span>
                             </div>
                             <div class="tt-row">
-                                <strong>Avg wage:</strong>
+                                <strong>Avg wage</strong>
                                 <span>${wage}</span>
                             </div>
 						</div>`

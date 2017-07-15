@@ -1,10 +1,9 @@
 'use strict';
 
 const d3 = require("d3");
+let trackEvent = require('./analytics.js').trackEvent;
 // const $ = require("jQuery");
-// window.$ = $;
-// window.jQuery = $;
-// require("chosen-js");
+
 
 function searchBar(vizConfig) {
 

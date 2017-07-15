@@ -1,10 +1,7 @@
 'use strict';
 
 const d3 = require("d3");
-// const $ = require("jQuery");
-// window.$ = $;
-// window.jQuery = $;
-// require("chosen-js");
+let trackEvent = require('./analytics.js').trackEvent;
 
 function searchBar(vizConfig) {
 
@@ -48,8 +45,8 @@ function searchBar(vizConfig) {
         .attr("id", "industry-select")
         .html(d=> {
             return `<option value="default">${vizConfig.placeholder}</option>
-                    <option value="pos">Projected to grow</option>
-                    <option value="neg">Projected to shrink</option>`
+                    <option value="pos">Projected to gain jobs, 2014-2024</option>
+                    <option value="neg">Projected to lose jobs, 2014-2024</option>`
         })
         // .attr("data-placeholder", placeholder)
         //.classed("chosen-select", true)
@@ -69,6 +66,8 @@ function searchBar(vizConfig) {
         .on("change", function() {
             let val = d3.select(this).property('value');
             val = val === "default" ? null : val;
+
+            trackEvent('dropdown-selection',val);
 
             let sel = vizConfig.context.plot.selectAll(".dot").filter(d => {
                 return d.sector === val;

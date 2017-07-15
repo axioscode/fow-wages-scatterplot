@@ -1,9 +1,8 @@
-var setupVisualsGoogleAnalytics = require('./analytics.js').setupVisualsGoogleAnalytics;
-var trackEvent = require('./analytics.js').trackEvent;
+let setupVisualsGoogleAnalytics = require('./analytics.js').setupVisualsGoogleAnalytics();
+let trackEvent = require('./analytics.js').trackEvent;
 
-var pym = require('pym.js');
-var pymChild = null;
-
+let pym = require('pym.js');
+let pymChild = null;
 
 let d3 = require("d3");
 import lineChart from "./lineChart";
@@ -24,8 +23,6 @@ function main() {
         constructor(opts) {
             this.init();
             this._setNav();
-            //this._setIntro();
-            this.curr = 0;
             this.index = 0;
         }
 
@@ -65,7 +62,7 @@ function main() {
                 context: this.theScatterplot
             });
 
-            d3.select(".search-container").classed("active", true);
+            //d3.select(".search-container").classed("active", true);
             // ***** //
 
             //DRAW CIRCLES TO SCALE FOR AI KEY
@@ -117,10 +114,12 @@ function main() {
                     _this.index = 0;
                 }
                 startTimer();
+                trackEvent('start-button','single');
             });
 
             d3.select('.ac-pause').on('click', () => {
                 pauseTimer();
+                trackEvent('pause-button','single');
             });
 
             function startTimer() {
@@ -136,73 +135,15 @@ function main() {
             this.slider.on('click change input', function() {
                 pauseTimer();
                 _this.index = +this.value;
-                _this.updateMonth(true);
+                _this.updateMonth(true); //boolean indicates whether update is coming from slider.
             });
 
             this.parseTime = d3.timeParse("%Y%m");
             this.formatDate = d3.timeFormat("%b %Y");
 
-            this.buttons = d3.selectAll(".cat-nav button").on("click", function() {
-                _this.theScatterplot.currCat = d3.select(this).attr("val");
-                _this.theScatterplot.updateCat("button");
-            });
-
             this.timer.start();
 
-            // d3.select("button.clear").on("click", d => {
-            //     d3.select("#industry-select").property('value', 'default');
-            //     this.theScatterplot.ttLive = false;
-            //     this.theScatterplot.clearHighlight();
-            // });
-
         }
-
-
-        _setIntro() {
-
-            let _this = this;
-            let cycle = ["Accommodation and Food Services", "Construction", "Manufacturing", "Finance and Insurance"];
-
-            let introIndex = 0;
-            this.introTimer = new makeTimer({
-                speed: 5000,
-                onUpdate: function() {
-
-                    introIndex++;
-
-                    if (introIndex >= cycle.length - 1) {
-                        introIndex = 0;
-                    }
-
-                    updateIntro();
-
-                }
-            });
-
-            updateIntro();
-
-            function updateIntro() {
-
-                let val = cycle[introIndex];
-                let sel = _this.theScatterplot.plot.selectAll(".dot").filter(d => {
-                    return d.sector === val;
-                });
-
-                let ttParams = {
-                    sel: sel,
-                    id: val,
-                    type: "desc",
-                    persist: false
-                }
-
-                _this.theScatterplot.setHighlight(ttParams);
-            }
-
-            this.introTimer.start();
-
-        }
-
-
 
 
         updateMonth(slider) {
@@ -225,7 +166,7 @@ function main() {
 
     let theChart = new makeChart();
 
-    var pymChild = new pym.Child();
+    let pymChild = new pym.Child();
 
 
     d3.select(window).on("resize", d => {
