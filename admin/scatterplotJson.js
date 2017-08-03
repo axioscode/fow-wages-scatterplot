@@ -160,7 +160,7 @@ function writeFile() {
     //...and write it to an output.json file. (or whatever you want to call it)
     fs.writeFile("../src/data/industryLookup.json", theLookup, function(err) {
         if (err) return console.log(err);
-        console.log('Data Success.');
+        console.log('Success: industryLookup.json');
     });
 
 
@@ -171,7 +171,8 @@ function writeFile() {
     //...and write it to an output.json file. (or whatever you want to call it)
     fs.writeFile("../src/data/monthsData.json", theMonths, function(err) {
         if (err) return console.log(err);
-        console.log('Data Success.');
+        console.log('Success: monthsData.json');
+        console.log('You are a bright and shining star.');
     });
 
 
