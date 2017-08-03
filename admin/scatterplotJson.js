@@ -158,7 +158,7 @@ function writeFile() {
     var theLookup = JSON.stringify(theIndustries);
 
     //...and write it to an output.json file. (or whatever you want to call it)
-    fs.writeFile("industryLookup_test.json", theLookup, function(err) {
+    fs.writeFile("../src/data/industryLookup.json", theLookup, function(err) {
         if (err) return console.log(err);
         console.log('Data Success.');
     });
@@ -169,7 +169,7 @@ function writeFile() {
     var theMonths = JSON.stringify(monthsObj);
 
     //...and write it to an output.json file. (or whatever you want to call it)
-    fs.writeFile("monthsData_test.json", theMonths, function(err) {
+    fs.writeFile("../src/data/monthsData.json", theMonths, function(err) {
         if (err) return console.log(err);
         console.log('Data Success.');
     });

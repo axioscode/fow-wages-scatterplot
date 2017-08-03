@@ -10,8 +10,8 @@ import scatterplot from "./scatterplot";
 // import indeedData from '../data/output.json';
 import makeTimer from "./makeTimer";
 import searchBar from "./sectorsDropdown";
-import industryLookup from '../data/industryLookup_test.json';
-import monthsData from '../data/monthsData_test.json';
+import industryLookup from '../data/industryLookup.json';
+import monthsData from '../data/monthsData.json';
 
 
 document.addEventListener("DOMContentLoaded", main());

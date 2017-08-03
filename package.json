@@ -55,6 +55,10 @@
     "run-sequence": "^1.2.2",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.9.0"
+    "watchify": "^3.9.0",
+    "node-xlsx": "^0.10.0",
+    "file-system": "^2.2.2 ",
+    "request": "^2.81.0",
+    "async" : "^2.5.0"
   }
 }
