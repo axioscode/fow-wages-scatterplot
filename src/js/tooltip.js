@@ -90,7 +90,7 @@ let init = function(ttDiv) {
                                 <span>${emp}</span>
                             </div>
                             <div class="tt-row">
-                                <strong>Avg wage</strong>
+                                <strong>Avg. wage</strong>
                                 <span>${wage}</span>
                             </div>
 						</div>`
