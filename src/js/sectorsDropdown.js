@@ -80,7 +80,7 @@ function searchBar(vizConfig) {
                 persist : false
             }
             
-            console.log(ttParams);
+            
 
             if (!val) {
                 vizConfig.context.currCat = "all";
@@ -97,6 +97,12 @@ function searchBar(vizConfig) {
             }
 
         });
+
+
+
+
+
+
 
     d3.select("button.clear").on("click", d => {
         d3.select("#state-select").property('value', 'default');

@@ -403,6 +403,7 @@ class scatterplot {
 
         this.projectionKey();
         this.updateDots();
+        this.updateDots();
         this.onReady();
 
        
@@ -471,7 +472,8 @@ class scatterplot {
                 return this.circleScale(d.emp / Math.PI) * this.scaleFactor;
             });
 
-        this.jobs.on("mouseover", function(d) {
+        this.jobs
+            .on("mouseover", function(d) {
                 let xPos = d.xPos + _this.margin.left;
                 let yPos = d.yPos + _this.margin.top;
 
@@ -537,15 +539,17 @@ class scatterplot {
 
 
     setHighlight(params) {
-
-        console.log(params);
-
+    
         this.highlightOn = true;
 
         this.tt.classed("persistent", params.persist);
 
         this.jobs.classed("inactive", true).classed("active", false);
-        params.sel.classed("inactive", false).classed("active", true);
+        
+        params.sel.classed("inactive", false).classed("active", d=> {
+            return true;
+        });
+
         this.jobTracks.classed("active", false);
 
         let activeTrack = this.jobTracks.filter(t => {
@@ -559,8 +563,6 @@ class scatterplot {
 
         d3.select("button.clear").classed("active", true);
         d3.select("#industry-select").property('value', params.id);
-
-        //console.log(params.id);
 
         if (params.persist) {
 
