@@ -187,7 +187,7 @@ async.series(
 
         function(callback) {
 
-            var data = xlsx.parse('indeed_bls_data_7-10-2017.xlsx'); //The data
+            var data = xlsx.parse('indeed_bls_data_8-4-2017.xlsx'); //The data
             callback(null, data);
 
         }

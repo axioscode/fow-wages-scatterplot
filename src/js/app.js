@@ -28,13 +28,18 @@ function main() {
 
         init() {
 
+            let _this = this;
+
             //Initiate the scatterplot.
             this.theScatterplot = new scatterplot({
                 element: document.querySelector(`.scatterplot.chart`),
                 data: monthsData,
                 lookup: industryLookup,
-                currCat: "all",
-                aspectHeight : .6
+                currCat: "Construction",
+                aspectHeight: .6,
+                onReady: function() {
+                    console.log("ready");
+                }
             });
             // ***** //
 
@@ -84,6 +89,7 @@ function main() {
             // ***** //
 
 
+
         }
 
         _setNav() {
@@ -114,12 +120,12 @@ function main() {
                     _this.index = 0;
                 }
                 startTimer();
-                trackEvent('start-button','single');
+                trackEvent('start-button', 'single');
             });
 
             d3.select('.ac-pause').on('click', () => {
                 pauseTimer();
-                trackEvent('pause-button','single');
+                trackEvent('pause-button', 'single');
             });
 
             function startTimer() {
@@ -143,6 +149,23 @@ function main() {
 
             this.timer.start();
 
+
+            let val = "Construction";
+
+            let sel = this.theScatterplot.plot.selectAll(".dot").filter(d => {
+                return d.sector === val;
+            });
+
+            let ttParams = {
+                sel : sel,
+                id : val,
+                type : "desc",
+                persist : false
+            }
+
+            this.theScatterplot.setHighlight(ttParams);
+
+
         }
 
 
@@ -162,10 +185,23 @@ function main() {
     }
 
 
+    function checkParam(name, url) {
+
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+
+
+
 
 
     let theChart = new makeChart();
-
     let pymChild = new pym.Child();
 
 

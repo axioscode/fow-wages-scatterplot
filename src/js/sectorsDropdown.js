@@ -79,6 +79,8 @@ function searchBar(vizConfig) {
                 type : "desc",
                 persist : false
             }
+            
+            console.log(ttParams);
 
             if (!val) {
                 vizConfig.context.currCat = "all";

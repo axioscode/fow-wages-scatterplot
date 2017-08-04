@@ -82,6 +82,8 @@ function searchBar(vizConfig) {
                 persist : false
             }
 
+            console.log(ttParams);
+
             if (val==="default") {
                 vizConfig.context.clearHighlight();
             } else {

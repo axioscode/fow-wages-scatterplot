@@ -12,6 +12,7 @@ class scatterplot {
         this.data = opts.data ? opts.data : null;
         this.lookup = opts.lookup ? opts.lookup : null;
         this.currCat = opts.currCat;
+        this.onReady = opts.onReady;
 
         this.parseTime = d3.timeParse("%Y%m");
         this.formatTime = d3.timeFormat("%Y");
@@ -402,6 +403,10 @@ class scatterplot {
 
         this.projectionKey();
         this.updateDots();
+        this.onReady();
+
+       
+
 
     }
 
@@ -518,6 +523,7 @@ class scatterplot {
         });
 
 
+
         this.tt.on("click", d => {
             // this.clearHighlight();
             this.ttLive = false;
@@ -526,11 +532,13 @@ class scatterplot {
             trackEvent('tooltip-close','mobile');
         });
 
+
     }
 
 
     setHighlight(params) {
 
+        console.log(params);
 
         this.highlightOn = true;
 
@@ -576,6 +584,8 @@ class scatterplot {
 
     clearHighlight() {
 
+        console.log("clearHighlight");
+
         this.highlightOn = false;
 
         this.ttLive = false;
@@ -594,7 +604,9 @@ class scatterplot {
 
 
     updateCat(origin) {
-        
+
+        console.log("updateCat");
+
         let cats = ["all", "pos", "neg"];
 
         cats.forEach(cat=> {
