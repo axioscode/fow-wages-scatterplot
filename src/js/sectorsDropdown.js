@@ -78,9 +78,7 @@ function searchBar(vizConfig) {
                 id : val,
                 type : "desc",
                 persist : false
-            }
-            
-            
+            }            
 
             if (!val) {
                 vizConfig.context.currCat = "all";
@@ -125,6 +123,9 @@ function searchBar(vizConfig) {
         // names must be equal
         return 0;
     }
+
+
+
 
 
 }

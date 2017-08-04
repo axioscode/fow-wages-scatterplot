@@ -15,32 +15,32 @@ import monthsData from '../data/monthsData.json';
 
 
 const sectorLookup = {
-  "11": "Agriculture, Forestry, Fishing and Hunting",
-  "21": "Mining, Quarrying, and Oil and Gas Extraction",
-  "22": "Utilities",
-  "23": "Construction",
-  "31": "Manufacturing",
-  "32": "Manufacturing",
-  "33": "Manufacturing",
-  "42": "Wholesale Trade",
-  "44": "Retail Trade",
-  "45": "Retail Trade",
-  "48": "Transportation and Warehousing",
-  "49": "Transportation and Warehousing",
-  "51": "Information",
-  "52": "Finance and Insurance",
-  "53": "Real Estate and Rental and Leasing",
-  "54": "Professional, Scientific, and Technical Services",
-  "55": "Management of Companies and Enterprises",
-  "56": "Administrative and Support and Waste Management and Remediation Services",
-  "61": "Educational Services",
-  "62": "Health Care and Social Assistance",
-  "71": "Arts, Entertainment, and Recreation",
-  "72": "Accommodation and Food Services",
-  "81": "Other Services (except Public Administration)",
-  "92": "Public Administration",
-  "PART 238" : "Specialty Trade Contractors",
-  "-" : "Federal, State or Local Government (no wage data available)"
+    "11": "Agriculture, Forestry, Fishing and Hunting",
+    "21": "Mining, Quarrying, and Oil and Gas Extraction",
+    "22": "Utilities",
+    "23": "Construction",
+    "31": "Manufacturing",
+    "32": "Manufacturing",
+    "33": "Manufacturing",
+    "42": "Wholesale Trade",
+    "44": "Retail Trade",
+    "45": "Retail Trade",
+    "48": "Transportation and Warehousing",
+    "49": "Transportation and Warehousing",
+    "51": "Information",
+    "52": "Finance and Insurance",
+    "53": "Real Estate and Rental and Leasing",
+    "54": "Professional, Scientific, and Technical Services",
+    "55": "Management of Companies and Enterprises",
+    "56": "Administrative and Support and Waste Management and Remediation Services",
+    "61": "Educational Services",
+    "62": "Health Care and Social Assistance",
+    "71": "Arts, Entertainment, and Recreation",
+    "72": "Accommodation and Food Services",
+    "81": "Other Services (except Public Administration)",
+    "92": "Public Administration",
+    "PART 238": "Specialty Trade Contractors",
+    "-": "Federal, State or Local Government (no wage data available)"
 };
 
 
@@ -53,7 +53,7 @@ function main() {
     class makeChart {
 
         constructor(opts) {
-            
+
             this.index = 0;
             this.defaultSector = sectorLookup[checkParam("sector")] ? sectorLookup[checkParam("sector")] : null;
 
@@ -127,7 +127,7 @@ function main() {
             if (this.defaultSector) {
                 this.setDefault();
             }
-            
+
 
 
         }
@@ -214,10 +214,10 @@ function main() {
             });
 
             let params = {
-                sel : sel,
-                id : this.defaultSector,
-                type : "desc",
-                persist : false
+                sel: sel,
+                id: this.defaultSector,
+                type: "desc",
+                persist: false
             }
 
             this.theScatterplot.setHighlight(params);
@@ -250,6 +250,12 @@ function main() {
 
     d3.select(window).on("resize", d => {
         theChart.theScatterplot.update();
+
+        if (theChart.defaultSector) {
+            theChart.setDefault();
+        }
     });
 
 }
+
+
