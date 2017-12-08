@@ -8,5 +8,9 @@
     "bucket": "graphics.axios.com",
     "folder": "2017-06-27-proj-indeed"
   },
-  "files": []
+  "files": [],
+  "isFullbleed": false,
+  "appleFallback": "img/scatter-promo-animated.gif",
+  "newsletterFallback": "img/scatter-promo-animated.gif",
+  "embedVersion": "1.0" 
 }
