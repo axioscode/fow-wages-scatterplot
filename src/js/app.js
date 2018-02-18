@@ -4,7 +4,13 @@ let trackEvent = require('./analytics.js').trackEvent;
 let pym = require('pym.js');
 let pymChild = null;
 
-let d3 = require("d3");
+import {
+    timeParse,
+    timeFormat,
+    select
+} from "d3";
+
+
 import lineChart from "./lineChart";
 import scatterplot from "./scatterplot";
 // import indeedData from '../data/output.json';
@@ -50,6 +56,8 @@ document.addEventListener("DOMContentLoaded", main());
 
 function main() {
 
+    let pymChild = new pym.Child();
+
     class makeChart {
 
         constructor(opts) {
@@ -74,7 +82,7 @@ function main() {
                 currCat: "Construction",
                 aspectHeight: .6,
                 onReady: function() {
-                    console.log("ready");
+                    pymChild.sendHeight();
                 }
             });
             // ***** //
@@ -103,7 +111,7 @@ function main() {
                 context: this.theScatterplot
             });
 
-            //d3.select(".search-container").classed("active", true);
+            //select(".search-container").classed("active", true);
             // ***** //
 
             //DRAW CIRCLES TO SCALE FOR AI KEY
@@ -111,7 +119,7 @@ function main() {
 
             // let thisVals = [1000, 5000, 10000];
 
-            // d3.select("svg.test").selectAll(".kc")
+            // select("svg.test").selectAll(".kc")
             // 	.data(thisVals).enter().append("circle")
             // 	.classed("kc", true)
             // 	.attr("cx", 100)
@@ -135,12 +143,12 @@ function main() {
         _setNav() {
             let _this = this;
 
-            this.sliderDiv = d3.select('.interface-bar');
+            this.sliderDiv = select('.interface-bar');
             this.sliderDiv.classed('is-playing', true);
 
             let months = this.theScatterplot.months; //Pull months array from scatterplot
 
-            this.slider = d3.select('#slider').attr("max", months.length - 2).attr("value", 0);
+            this.slider = select('#slider').attr("max", months.length - 2).attr("value", 0);
 
             this.timer = new makeTimer({
                 speed: 200,
@@ -155,7 +163,7 @@ function main() {
                 }
             });
 
-            d3.select('.ac-start').on('click', () => {
+            select('.ac-start').on('click', () => {
                 if (_this.index >= (months.length - 2)) {
                     _this.index = 0;
                 }
@@ -163,7 +171,7 @@ function main() {
                 trackEvent('start-button', 'single');
             });
 
-            d3.select('.ac-pause').on('click', () => {
+            select('.ac-pause').on('click', () => {
                 pauseTimer();
                 trackEvent('pause-button', 'single');
             });
@@ -184,8 +192,8 @@ function main() {
                 _this.updateMonth(true); //boolean indicates whether update is coming from slider.
             });
 
-            this.parseTime = d3.timeParse("%Y%m");
-            this.formatDate = d3.timeFormat("%b %Y");
+            this.parseTime = timeParse("%Y%m");
+            this.formatDate = timeFormat("%b %Y");
 
             this.timer.start();
 
@@ -197,7 +205,7 @@ function main() {
             let str = this.theScatterplot.months[this.index];
             let dateObj = this.parseTime(str);
 
-            d3.select("#time").html(this.formatDate(dateObj));
+            select("#time").html(this.formatDate(dateObj));
 
             this.slider.node().value = this.index;
             this.theScatterplot.index = this.index;
@@ -245,10 +253,10 @@ function main() {
 
 
     let theChart = new makeChart();
-    let pymChild = new pym.Child();
+    pymChild.sendHeight();
 
 
-    d3.select(window).on("resize", d => {
+    select(window).on("resize", d => {
         theChart.theScatterplot.update();
 
         if (theChart.defaultSector) {

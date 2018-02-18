@@ -1,0 +1,22 @@
+This jobs and wages graphic has been updated with the most recent number. Today's chart highlights the "Information" sector.
+
+Stream draft:
+https://www.axios.com/job-market-is-strong-but-wage-growth-still-lags-2480223171.html?draft=1
+
+ai2html embed code (Defaults to transportation sector view)
+In the CMS, switch to the code view and put these two lines of code where you want the graphic to appear -> 
+
+[shortcode-pym-iframe id="2017-09-01-proj-indeed" url="https://graphics.axios.com/2017-06-27-proj-indeed/index.html?sector=51"]
+<small class="image-media media-photo-credit">Data: Bureau of Labor Statistics; Graphic: Chris Canipe / Axios</small>
+
+Animated GIF promo for FOW newsletter (highlights the "Information" sector)
+Use this for social media promotion and within the newsletter
+
+Link -> https://graphics.axios.com/2017-06-27-proj-indeed/img/transport-sector-promo-anim.gif
+
+Image fallback (static)
+You can link to this images for fallbacks in newsletters and other formats that can't accept html.
+
+Link -> http://graphics.axios.com.s3.amazonaws.com/2017-06-27-proj-indeed/img/scatterplot-promo-fallback-09-01-17.png
+
+Image credit should read -> Data: Bureau of Labor Statistics; Graphic: Chris Canipe / Axios

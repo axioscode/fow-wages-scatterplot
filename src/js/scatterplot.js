@@ -21,7 +21,6 @@ class scatterplot {
         this.ttLive = false;
         this.highlightOn = false;
 
-
         this.index = 0;
 
         this._setData();
@@ -205,6 +204,7 @@ class scatterplot {
         this._setDimensions();
         this._setScales();
         this.draw();
+        this.onReady();
     }
 
 
@@ -404,7 +404,7 @@ class scatterplot {
         this.projectionKey();
         this.updateDots();
         this.updateDots();
-        this.onReady();
+        
 
        
 

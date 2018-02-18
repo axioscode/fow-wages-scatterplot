@@ -1,6 +1,10 @@
 'use strict';
 
-const d3 = require("d3");
+
+import {select} from "d3";
+
+
+
 let trackEvent = require('./analytics.js').trackEvent;
 // const $ = require("jQuery");
 
@@ -28,7 +32,7 @@ function searchBar(vizConfig) {
         return sortArray(a.val, b.val);
     });
 
-    let optGroups = d3.select(vizConfig.selector)
+    let optGroups = select(vizConfig.selector)
         .insert("div", ":first-child")
         .attr("class", "header-search")
         .append("select")
@@ -67,9 +71,9 @@ function searchBar(vizConfig) {
             }
         });
 
-    d3.select("#industry-select")
+    select("#industry-select")
         .on("change", function() {
-            let val = d3.select(this).property('value');
+            let val = select(this).property('value');
             let sel = vizConfig.context.plot.selectAll(".dot").filter(d => {
                 return d.id === val;
             });

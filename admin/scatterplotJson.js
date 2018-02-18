@@ -9,6 +9,9 @@ var theIndustries = {}; //Empty global object to build our javascript object.
 var monthsArray = [];
 var monthsObj = {};
 
+//**************
+let currFilename = "indeed_bls_data_12-08-2017.xlsx";
+//**************
 
 const sectorLookup = {
   "11": "Agriculture, Forestry, Fishing and Hunting",
@@ -187,7 +190,7 @@ async.series(
 
         function(callback) {
 
-            var data = xlsx.parse('indeed_bls_data_8-4-2017.xlsx'); //The data
+            var data = xlsx.parse(currFilename); //The data
             callback(null, data);
 
         }
