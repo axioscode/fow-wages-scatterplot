@@ -190,7 +190,7 @@ async.series(
 
         function(callback) {
 
-            var data = xlsx.parse(currFilename); //The data
+            var data = xlsx.parse('indeed_bls_data_12-8-2017.xlsx'); //The data
             callback(null, data);
 
         }
