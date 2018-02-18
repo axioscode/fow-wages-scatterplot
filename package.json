@@ -32,7 +32,7 @@
     "gulp-clean-css": "^3.0.3",
     "gulp-debug": "^3.0.0",
     "gulp-env": "^0.4.0",
-    "gulp-handlebars": "^4.0.0",
+    "gulp-handlebars": "^5.0.2",
     "gulp-hb": "^5.1.4",
     "gulp-htmlmin": "^3.0.0",
     "gulp-if": "^2.0.2",
